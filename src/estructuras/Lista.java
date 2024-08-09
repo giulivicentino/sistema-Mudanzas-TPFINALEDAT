@@ -1,17 +1,17 @@
-package Estructuras.lineales.dinamicas;
+package estructuras;
 
-import java.util.Set;
+import SistMudanzas.Solicitud;
 
 public class Lista {
 
     private Nodo cabecera;
-      private int longitud;
+    // private int longitud;
 
     public Lista() {
-        cabecera = null;
-        //   longitud = 0;
+        this.cabecera = null;
+        // longitud = 0;
     }
-//longitud puede estar como metodo o como atributo
+    //longitud puede estar como metodo o como atributo
 
     public boolean insertar(Object nuevoElemento, int pos) {
         boolean exito = true;
@@ -54,26 +54,6 @@ public class Lista {
         return exito;
     }
 
-    /*public Object recuperar(int pos) {
-        Object elem;
-       
-        if (pos >= 1 || pos <= longitud()) { //posicion valida
-            Nodo aux = this.cabecera;
-            int i = 1;
-            while (i < pos) { 
-                
-              // que itere hasta que encuentre la posicion
-                    aux = aux.getEnlace();
-                    i++;
-                
-                //CON EL NODO QUE QUIERO
-                
-            }elem = aux.getElem();
-        } else {
-            elem = null;
-        }
-        return elem;
-    }*/
     public Object recuperar(int pos) {
         // Devuelve el elemento en la posicion requerida por el usuario
         // Caso invalido retorna null
@@ -83,7 +63,7 @@ public class Lista {
         } else { // Caso valido retorna elemento
             Nodo aux = this.cabecera;
             int i = 1;
-            while (i < pos) { //recorre hasta que llega a la posicion deseada
+            while (i < pos) {
                 aux = aux.getEnlace();
                 i++;
             }
@@ -123,29 +103,29 @@ public class Lista {
         return i;
     }
 
- public boolean esVacia() {
+    public boolean esVacia() {
         return this.cabecera == null;
     }
 
     public void vaciar() {
         this.cabecera = null;
     }
- public Lista clone() {
-     Lista clon=new Lista();
-     int i, largo=this.longitud();
-     
-     if (this.cabecera !=null) {
-         Nodo aux=this.cabecera.getEnlace();
-         clon.cabecera=new Nodo(this.cabecera.getElem(), null);
-         Nodo aux2=clon.cabecera;
-        for (i=1; i<largo; i++) {
-            aux2.setEnlace(new Nodo(aux.getElem(), null));
-            aux=aux.getEnlace();
-            aux2=aux2.getEnlace();
-        }         
-     }
-     return clon;
- }
+
+    public Lista clone() {
+        Lista listaClon = new Lista();
+        if (!esVacia()) {
+            Nodo aux1 = this.cabecera;
+            Nodo aux2 = new Nodo(aux1.getElem(), null);
+            listaClon.cabecera = aux2;
+            while (aux1.getEnlace() != null) {
+                aux1 = aux1.getEnlace(); // itero el aux1 
+                Nodo nuevo = new Nodo(aux1.getElem(), null); // creo el nodo con el elemento correspondiente de la original
+                aux2.setEnlace(nuevo);  //engancho el aux con el nodo nuevo 
+                aux2 = aux2.getEnlace(); // itero el aux2 
+            }
+        }
+        return listaClon;
+    }
 
     @Override
     public String toString() {
@@ -158,63 +138,70 @@ public class Lista {
                 resultado = resultado + aux.getElem().toString();
                 aux = aux.getEnlace();
                 if (aux != null) {
-                    resultado = resultado + ", ";
+                    resultado = resultado + ", \n\t    ";
                 }
+            }
+            resultado = "[" + resultado + "]";
+        }
+        return resultado;
+    }
+
+    public boolean equals(Lista l) {
+        boolean esIgual = true;
+        Nodo aux1 = this.cabecera;
+        Nodo aux2 = l.cabecera;
+        if ((aux1 != null && aux2 == null) || (aux1 == null && aux2 != null)) {
+            esIgual = false;
+        }
+        while (aux1 != null && esIgual && aux2 != null) {
+            if (aux1.getElem().equals(aux2.getElem())) {
+                aux1 = aux1.getEnlace();
+                aux2 = aux2.getEnlace();
+            } else {
+                esIgual = false;
+            }
+        }
+        return esIgual;
+    }
+
+    public boolean eliminarSolicitud(Object elem) {
+        boolean exito = false;
+        Solicitud elemAux = (Solicitud) elem;
+        if(this.cabecera != null) {
+            Solicitud solicitud = (Solicitud) this.cabecera.getElem();
+            if(solicitud.equals(elemAux)) {
+                this.cabecera = this.cabecera.getEnlace();
+                exito = true;
+            } else {
+                Nodo aux = this.cabecera;
+                while (aux.getEnlace() != null && !exito) {
+                    solicitud = (Solicitud) aux.getEnlace().getElem();
+                    if(solicitud.equals(elemAux)) {
+                        aux.setEnlace(aux.getEnlace().getEnlace());
+                        exito = true;
+                    } else {
+                        aux = aux.getEnlace();
+                    }
+                }
+            }
+        }
+        return exito;
+    }
+
+    public Object buscarSolicitud(Object solicitud) {
+        Object resultado = null;
+        Solicitud nodo;
+        Nodo aux = this.cabecera;
+        while(aux != null && resultado == null) {
+            nodo = (Solicitud) aux.getElem();
+            if(nodo.equals((Solicitud)solicitud)) {
+                resultado = aux.getElem();
+            } else {
+                aux = aux.getEnlace();
             }
         }
         return resultado;
     }
 
-    //---------------------------------------------------------------------------------------------------------------------------------------------
-  public Lista obtenerMultiplos(int num) {
-        Lista nuevaLista = new Lista();
-        Nodo nodo1 = this.cabecera;
-        Nodo nodo2 = null;
-        int pos1 = 1;
-        if (this.cabecera != null) {
-            while (pos1 < this.longitud() - 1) { //para recorrer toda la lista
-                if (pos1 % num == 0) { //si la posicion es multiplo del numero
-                    if (nuevaLista.cabecera == null) { //si la lista neuva esta vacia
-                        nuevaLista.cabecera = new Nodo(nodo1.getElem(), null);
-                        nodo2 = nuevaLista.cabecera;
-                      //  nodo1 = nodo1.getEnlace(); //ITERO EN LISTA 1
-                    } else {
-                        nodo2.setEnlace(new Nodo(nodo1.getElem(), null));
-                        nodo2 = nodo2.getEnlace(); //ITERO EN LISTA 2
-                    }
-                }
-                nodo1 = nodo1.getEnlace();
-                pos1++;
-            }
-        }
-        return nuevaLista;
-    }
-  public void eliminarApariciones(Object x) {
-        int i=1;
-        Nodo aux = this.cabecera;
-        while(i<this.longitud){
-            System.out.println(i);
-            if (i == 1 && (aux.getElem().equals(x))) {
-                aux = cabecera.getEnlace();
-                this.cabecera = cabecera.getEnlace();
-                this.longitud--;
-            } else {
-                if(aux.getEnlace()!=null){
-                    if((aux.getEnlace().getElem().equals(x))){
-                        aux.setEnlace(aux.getEnlace().getEnlace());
-                        aux=aux.getEnlace();
-                        this.longitud--;
-                    } else {
-                        aux = aux.getEnlace();
-                        i++;
-                    }
-                }
-            }
-        }
-
-
-    }
-  //---------------------------------------------------------------RECU---------------------------------------------------------------------------------------
-  
-  
+    
 }
