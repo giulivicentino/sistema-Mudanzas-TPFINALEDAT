@@ -46,9 +46,7 @@ public class Empresa {
         String archivo = "C:\\Users\\giuli\\Desktop\\DatosCarga.txt";
         String[] datos;
         boolean exito = true;
-        System.out.println("CARGA");
         inicializarLog();
-        System.out.println("chau log");
         try {
             FileReader lector = new FileReader(archivo);
             try (BufferedReader buffer = new BufferedReader(lector)) {
@@ -164,16 +162,16 @@ public class Empresa {
                     ABMciudades();
                     break;
                 case 2:
-                    //ABMrutas();
+                    ABMrutas();
                     break;
                 case 3:
-                    //ABMclientes();
+                    ABMclientes();
                     break;
                 case 4:
-                    //ABMpedidos();
+                    ABMpedidos();
                     break;
                 case 5:
-                    //consultasClientes();
+                    consultasClientes();
                     break;
                 case 6:
                     //consultasCiudades();
@@ -185,7 +183,7 @@ public class Empresa {
                     //verificarViajes();
                     break;
                 case 9:
-                    //mostrarSistema();
+                    mostrarSistema();
                     break;
                 case 10:
                     finalizarLog();
@@ -350,4 +348,587 @@ public class Empresa {
 
     }
 
+
+    public static void ABMrutas() {
+        int opcion = 0;
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Se selecciono la opcion 2. Realizar ABM de Rutas");
+        while (opcion != 4) {
+            System.out.println("---------------------------------------------------------------------");
+            System.out.println("Ingrese una opcion");
+            System.out.println("1. Insertar una nueva Ruta");
+            System.out.println("2. Eliminar una Ruta existente");
+            System.out.println("3. Modificar una Ruta existente");
+            System.out.println("4. Volver al Menu Principal");
+            System.out.println("---------------------------------------------------------------------");
+            opcion = sc.nextInt();
+            sc.nextLine();
+            switch (opcion) {
+                case 1:
+                    insertarRuta();
+                    break;
+                case 2:
+                //eliminarRuta();
+                    break;
+                case 3:
+                System.out.println("No es posible modificar la distancia de una Ciudad a otra");
+                System.out.println("Elimine una Ruta existente o Inserte una nueva Ruta");
+                ;
+                    break;
+                case 4:
+                    break; // SE CORTA EL BUCLE    
+                default:
+                    System.out.println("Opcion invalida. Por favor ingrese una opcion valida");
+            }
+        }
+    }
+
+    public static void insertarRuta(){
+        int origen, destino;
+        double km;
+        System.out.println("Ingrese el codigo postal de la ciudad de origen");
+        origen = sc.nextInt();
+        System.out.println("Ingrese el codigo postal de la ciudad de destino");
+        destino  = sc.nextInt();
+        System.out.println("Ingrese la distancia en kilometros entre las dos ciudad");
+        km = sc.nextDouble();
+
+        // LAS DOS CIUDADES DEBEN EXISTIR PARA CREAR UNA RUTA ENTRE ELLAS
+        if (mapaRutas.existeVertice(origen) && mapaRutas.existeVertice(destino)) {
+            // ADEMAS, NO DEBE EXISTIR UNA RUTA ENTRE ELLAS
+            if (mapaRutas.existeArco(origen, destino)) {
+                System.out.println("Ya existe una Ruta que conecta las dos Ciudades ingresadas. ERROR");
+            } else {
+                System.out.println("Ingrese la distancia entre las dos Ciudades");
+                km = sc.nextDouble();
+                if (km <= 0) {
+                    System.out.println("Ingrese una distancia valida");
+                } else {
+                    cargarMapa(origen, destino, km);
+                }
+            }
+        } else {
+            System.out.println("Una de las Ciudades ingresadas no existe en el sistema. ERROR");
+        }
+    
+    }
+
+    
+    public static void eliminarRuta() {
+        // METODO QUE ELIMINA UNA RUTA DEL SISTEMA
+        int origen, destino;
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Eliminar una Ruta existente entre dos Ciudades");
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Ingrese el codigo postal de la primera Ciudad");
+        origen = sc.nextInt();
+        System.out.println("Ingrese el codigo postal de la segunda Ciudad");
+        destino = sc.nextInt();
+        // LAS DOS CIUDADES DEBEN EXISTIR PARA BORRAR LA RUTA ENTRE ELLAS
+        if (mapaRutas.existeVertice(origen) && mapaRutas.existeVertice(destino)) {
+            // ADEMAS, DEBE EXISTIR UNA RUTA ENTRE ELLAS
+            if (mapaRutas.existeArco(origen, destino)) {
+                if (mapaRutas.eliminarArco(origen, destino)) {
+                    escribirEnLog("La Ruta que conecta a " + origen + " y " + destino + " fue eliminada con exito");
+                } else {
+                    escribirEnLog("La Ruta que conecta a " + origen + " y " + destino + " no se pudo eliminar");
+                }
+            } else {
+                System.out.println("No existe ninguna Ruta que conecta estas dos Ciudades. ERROR");
+            }
+        } else {
+            System.out.println("Una de las Ciudades ingresadas no existe en el sistema. ERROR");
+        }
+    }
+
+    public static void ABMclientes() {
+        int opcion = 0;
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Se selecciono la opcion 3. Realizar ABM de Clientes");
+        while (opcion != 4) {
+            System.out.println("---------------------------------------------------------------------");
+            System.out.println("Ingrese una opcion");
+            System.out.println("1. Insertar un nuevo Cliente");
+            System.out.println("2. Eliminar un Cliente existente");
+            System.out.println("3. Modificar un Cliente existente");
+            System.out.println("4. Volver al Menu Principal");
+            System.out.println("---------------------------------------------------------------------");
+            opcion = sc.nextInt();
+            switch (opcion) {
+                case 1:
+                    insertarCliente();
+                    break;
+                case 2:
+                    eliminarCliente();
+                    break;
+                case 3:
+                    modificarCliente();
+                    break;
+                case 4:
+                    break; // SE CORTA EL BUCLE    
+                default:
+                    System.out.println("Opcion invalida. Por favor ingrese una opcion valida");
+            }
+        }
+    }
+
+    public static void insertarCliente() {
+        // METODO QUE INSERTA UN CLIENTE AL SISTEMA
+        int numDoc;
+        String tipoDoc;
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Dar de alta un nuevo Cliente al Sistema");
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Ingrese el tipo de documento del nuevo Cliente");
+        tipoDoc = sc.next();
+        System.out.println("Ingrese el numero de documento del nuevo Cliente");
+        numDoc = sc.nextInt();
+        // PARA INSERTARLO, NO DEBE EXISTIR UN CLIENTE CON LA MISMA CLAVE
+        String clave = tipoDoc + numDoc;
+        if (clientes.containsKey(clave)) {
+            System.out.println("El Cliente con clave " + clave + " ya existe. ERROR");
+        } else {
+            sc.nextLine();
+            String apellido, nombre, telefono, email;
+            System.out.println("Ingrese el apellido del nuevo Cliente");
+            apellido = sc.nextLine();
+            System.out.println("Ingrese el nombre del nuevo Cliente");
+            nombre = sc.nextLine();
+            System.out.println("Ingrese el numero de telefono del nuevo Cliente");
+            telefono = sc.nextLine();
+            System.out.println("Ingrese la direccion de email del nuevo Cliente");
+            email = sc.nextLine();
+            cargarCliente(tipoDoc, numDoc, apellido, nombre, telefono, email);
+        }
+    }
+
+    public static void eliminarCliente() {
+        // METODO QUE ELIMINA UN CLIENTE DEL SISTEMA
+        int numDoc;
+        String tipoDoc;
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Dar de baja un Cliente del sistema");
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Ingrese el tipo de documento del Cliente a eliminar");
+        tipoDoc = sc.next();
+        System.out.println("Ingrese el numero de documento del Cliente a eliminar");
+        numDoc = sc.nextInt();
+        // PARA ELIMINARLO, EL CLIENTE DEBE EXISTIR
+        String clave = tipoDoc + numDoc;
+        if (clientes.containsKey(clave)) {
+            boolean seElimino = clientes.remove(clave) != null;
+            if (seElimino) {
+                escribirEnLog("El Cliente con clave " + clave + " se elimino con exito del sistema");
+            } else {
+                escribirEnLog("NO se pudo eliminar al Cliente con clave " + clave);
+            }
+        } else {
+            System.out.println("El Cliente con clave " + clave + " no existe. ERROR");
+        }
+    }
+
+    public static void modificarCliente() {
+        // METODO QUE MODIFICA ATRIBUTOS DE UN CLIENTE DEL SISTEMA
+        // NO SE PUEDEN MODIFICAR LAS CLAVES
+        int numDoc;
+        String tipoDoc;
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Modificar un Cliente del sistema");
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Ingrese el tipo de documento del Cliente a modificar");
+        tipoDoc = sc.next();
+        System.out.println("Ingrese un numero de documento del Cliente a modificar");
+        numDoc = sc.nextInt();
+        // SI EL CLIENTE EXISTE, MODIFICAMOS EL ATRIBUTO QUE EL USUARIO ELIJA
+        String clave = tipoDoc + numDoc;
+        if (clientes.containsKey(clave)) {
+            Cliente cliente = (Cliente) clientes.get(clave);
+            int opcion = 0;
+            String cadena;
+            while (opcion != 5) {
+                System.out.println("---------------------------------------------------------------------");
+                System.out.println("Ingrese una opcion");
+                System.out.println("1. Modificar el apellido del Cliente con numero de documento " + numDoc);
+                System.out.println("2. Modificar el nombre del Cliente con numero de documento " + numDoc);
+                System.out.println("3. Modificar el numero de telefono del Cliente con numero de documento " + numDoc);
+                System.out.println("4. Modificar la direccion de email del Cliente con numero de documento " + numDoc);
+                System.out.println("5. Volver al menu de ABMclientes");
+                System.out.println("---------------------------------------------------------------------");
+                opcion = sc.nextInt();
+                sc.nextLine();
+                switch (opcion) {
+                    case 1:
+                        System.out.println("Ingrese el nuevo apellido del Cliente con clave " + clave);
+                        cadena = sc.nextLine();
+                        cliente.setApellido(cadena);
+                        escribirEnLog("El Cliente con clave " + clave + " ahora se apellida " + cadena);
+                        break;
+                    case 2:
+                        System.out.println("Ingrese el nuevo nombre del Cliente con clave " + clave);
+                        cadena = sc.nextLine();
+                        cliente.setNombre(cadena);
+                        escribirEnLog("El Cliente con clave " + clave + " ahora se llama " + cadena);
+                        break;
+                    case 3:
+                        System.out.println("Ingrese el nuevo numero de telefono del Cliente con clave " + clave);
+                        cadena = sc.nextLine();
+                        cliente.setTelefono(cadena);
+                        escribirEnLog("El Cliente con clave " + clave + " cambio de numero de telefono a " + cadena);
+                        break;
+                    case 4:
+                        System.out.println("Ingrese la nueva direccion de email del Cliente con clave " + clave);
+                        cadena = sc.nextLine();
+                        cliente.setEmail(cadena);
+                        escribirEnLog("El Cliente con clave " + clave + " cambio su direccion de email a " + cadena);
+                        break;
+                    case 5:
+                        break; // SE CORTA EL BUCLE
+                    default:
+                        System.out.println("Opcion invalida. Por favor ingrese una opcion valida");
+                }
+            }
+        } else {
+            System.out.println("El Cliente con clave " + clave + " no existe. ERROR");
+        }
+    }
+
+    public static void ABMpedidos() {
+        int opcion = 0;
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Se selecciono la opcion 4. Realizar ABM de Pedidos");
+        while (opcion != 4) {
+            System.out.println("---------------------------------------------------------------------");
+            System.out.println("Ingrese una opcion");
+            System.out.println("1. Agregar un nuevo Pedido");
+            System.out.println("2. Eliminar un Pedido existente");
+            System.out.println("3. Modificar un Pedido existente");
+            System.out.println("4. Volver al Menu Principal");
+            System.out.println("---------------------------------------------------------------------");
+            opcion = sc.nextInt();
+            switch (opcion) {
+                case 1:
+                    insertarPedido();
+                    break;
+                case 2:
+                    eliminarPedido();
+                    break;
+                case 3:
+                    modificarPedido();
+                    break;
+                case 4:
+                    break; // SE CORTA EL BUCLE    
+                default:
+                    System.out.println("Opcion invalida. Por favor ingrese una opcion valida");
+            }
+        }
+    }
+
+    public static void insertarPedido() {
+        // METODO QUE INSERTA UN PEDIDO AL SISTEMA
+        int origen, destino;
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Agregar un nuevo Pedido entre Ciudades");
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Ingrese el codigo postal de la Ciudad origen");
+        origen = sc.nextInt();
+        System.out.println("Ingrese el codigo postal de la Ciudad destino");
+        destino = sc.nextInt();
+        // PARA INSERTARLO, LAS CIUDADES DEBEN EXISTIR
+        if (mapaRutas.existeVertice(origen) && mapaRutas.existeVertice(destino)) {
+            System.out.println("Ingrese el tipo de documento del Cliente");
+            String tipoDoc = sc.next();
+            System.out.println("Ingrese el numero de documento del Cliente");
+            int numDoc = sc.nextInt();
+            // ADEMAS, EL CLIENTE DEBE EXISTIR Y NO DEBE REALIZAR UN PEDIDO IGUAL
+            String clave = tipoDoc + numDoc;
+            if (clientes.containsKey(clave)) {
+                System.out.println("Ingrese la fecha que solicito el Pedido");
+                String fechaSolicitud = sc.next();
+                if (solicitudes.obtenerPedido(origen + "" + destino, new Solicitud(origen, destino,
+                        fechaSolicitud, tipoDoc, numDoc, 0, 0,
+                        null, null, null)) != null) {
+                    System.out.println("Ya existe un pedido en camino entre las Ciudades ingresadas, realizado por " + clave + " en esa fecha. ERROR");
+                } else {
+                    System.out.println("Ingrese la cantidad de metros cubicos que ocupa el Pedido");
+                    int cantMetrosCubicos = sc.nextInt();
+                    System.out.println("Ingrese la cantidad de bultos que ocupa el Pedido");
+                    int cantBultos = sc.nextInt();
+                    sc.nextLine();
+                    System.out.println("Ingrese el domicilio de retiro");
+                    String domicilioRetiro = sc.nextLine();
+                    System.out.println("Ingrese el domicilio de entrega");
+                    String domicilioEntrega = sc.nextLine();
+                    System.out.println("El envio esta pago? (T/F)");
+                    String estaPago = sc.nextLine();
+                    cargarSolicitud(origen, destino, fechaSolicitud, tipoDoc, numDoc, cantMetrosCubicos, cantBultos, domicilioRetiro, domicilioEntrega, estaPago);
+                }
+            } else {
+                System.out.println("El Cliente con clave " + clave + " no existe. ERROR");
+            }
+        } else {
+            System.out.println("Una de las Ciudades ingresadas no existe en el sistema. ERROR");
+        }
+    }
+
+    public static void eliminarPedido() {
+        // METODO QUE ELIMINA UN PEDIDO DEL SISTEMA
+        int origen, destino, numDoc;
+        String tipoDoc;
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Eliminar un Pedido existente entre Ciudades");
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Ingrese el codigo postal de la Ciudad origen");
+        origen = sc.nextInt();
+        System.out.println("Ingrese el codigo postal de la Ciudad destino");
+        destino = sc.nextInt();
+        // PARA ELIMINARLO LAS CIUDADES DEBEN EXISTIR
+        if (mapaRutas.existeVertice(origen) && mapaRutas.existeVertice(destino)) {
+            System.out.println("Ingrese el tipo de documento del Cliente que quiere cancelar su Pedido");
+            tipoDoc = sc.next();
+            System.out.println("Ingrese el numero de documento del Cliente que quiere cancelar el Pedido");
+            numDoc = sc.nextInt();
+            // ADEMAS, EL CLIENTE Y EL PEDIDO DEBEN EXISTIR
+            String clave = tipoDoc + numDoc;
+            if (clientes.containsKey(clave)) {
+                // ADEMAS, EL PEDIDO DEBE EXISTIR
+                System.out.println("Ingrese la fecha que solicito el Pedido");
+                String fechaSolicitud = sc.next();
+                if (solicitudes.desasociar(origen + "" + destino, new Solicitud(origen, destino,
+                        fechaSolicitud, tipoDoc, numDoc, 0, 0,
+                        null, null, null))) {
+                    escribirEnLog("Se cancelo el Pedido de " + clave + " entre " + origen + " y " + destino + " realizado el " + fechaSolicitud);
+                } else {
+                    System.out.println("El Pedido que quiere eliminar no existe");
+                }
+            } else {
+                System.out.println("El Cliente con clave " + clave + " no existe. ERROR");
+            }
+        } else {
+            System.out.println("Una de las Ciudades ingresadas no existe en el sistema. ERROR");
+        }
+    }
+
+    public static void modificarPedido() {
+        // METODO QUE MODIFICA ATRIBUTOS DE UN PEDIDO DEL SISTEMA
+        // NO SE PUEDEN MODIFICAR LAS CLAVES
+        int origen, destino, numDoc;
+        String tipoDoc;
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Modificar un Pedido existente entre Ciudades");
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Ingrese el codigo postal de la Ciudad origen");
+        origen = sc.nextInt();
+        System.out.println("Ingrese el codigo postal de la Ciudad destino");
+        destino = sc.nextInt();
+        // SI EL PEDIDO EXISTE, MODIFICAMOS EL ATRIBUTO QUE EL USUARIO ELIJA
+        if (mapaRutas.existeVertice(origen) && mapaRutas.existeVertice(destino)) {
+            System.out.println("Ingrese el tipo de documento del Cliente que quiere modificar su Pedido");
+            tipoDoc = sc.next();
+            System.out.println("Ingrese el numero de documento del Cliente que quiere modificar su Pedido");
+            numDoc = sc.nextInt();
+            String clave = tipoDoc + numDoc;
+            if (clientes.containsKey(clave)) {
+                System.out.println("Ingrese la fecha que solicito el Pedido");
+                String fechaSolicitud = sc.next();
+                Solicitud solicitud = (Solicitud) solicitudes.obtenerPedido(origen + "" + destino, new Solicitud(origen, destino,
+                        fechaSolicitud, tipoDoc, numDoc, 0, 0,
+                        null, null, null));
+                if (solicitud != null) {
+                    int opcion = 0;
+                    String cadena;
+                    int cantidad;
+                    while (opcion != 6) {
+                        System.out.println("---------------------------------------------------------------------");
+                        System.out.println("Ingrese una opcion");
+                        System.out.println("1. Modificar la cantidad de metros cubicos que ocupa el Pedido");
+                        System.out.println("2. Modificar la cantidad de bultos que compone el Pedido");
+                        System.out.println("3. Cambiar la direccion de retiro del Pedido");
+                        System.out.println("4. Cambiar la direccion de entrega del Pedido");
+                        System.out.println("5. Cambiar la condicion de pago en la que se encuentra el Pedido");
+                        System.out.println("6. Volver al menu de ABMpedidos");
+                        System.out.println("---------------------------------------------------------------------");
+                        opcion = sc.nextInt();
+                        sc.nextLine();
+                        switch (opcion) {
+                            case 1:
+                                System.out.println("Ingrese la cantidad de metros cubicos que ahora ocupa el Pedido");
+                                cantidad = sc.nextInt();
+                                escribirEnLog("El Pedido " + solicitud.toString() + " ahora ocupa " + cantidad + " metros cubicos");
+                                solicitud.setCantMetrosCubicos(cantidad);
+                                break;
+                            case 2:
+                                System.out.println("Ingrese la cantidad de bultos que ahora compone el Pedido");
+                                cantidad = sc.nextInt();
+                                escribirEnLog("El Pedido " + solicitud.toString() + " ahora consta de " + cantidad + " bultos");
+                                solicitud.setCantBultos(cantidad);
+                                break;
+                            case 3:
+                                System.out.println("Ingrese la nueva direccion de retiro");
+                                cadena = sc.nextLine();
+                                escribirEnLog("El Pedido " + solicitud.toString() + " ahora se retirara en " + cadena);
+                                solicitud.setDomicilioRetiro(cadena);
+                                break;
+                            case 4:
+                                System.out.println("Ingrese la nueva direccion de entrega");
+                                cadena = sc.nextLine();
+                                escribirEnLog("El Pedido " + solicitud.toString() + " ahora se entregara en " + cadena);
+                                solicitud.setDomicilioEntrega(cadena);
+                                break;
+                            case 5:
+                                System.out.println("Ingrese la nueva condicion en la que se encuentra el Pedido (T/F)");
+                                cadena = sc.nextLine();
+                                escribirEnLog("El Pedido " + solicitud.toString() + " ahora se encuentra pagado?: " + cadena);
+                                solicitud.setEstaPago(cadena);
+                                break;
+                            case 6:
+                                break; // SE CORTA EL BUCLE
+                            default:
+                                System.out.println("Opcion invalida. Por favor ingrese una opcion valida");
+                        }
+                    }
+                } else {
+                    System.out.println("El Pedido que quiere modificar no existe");
+                }
+            } else {
+                System.out.println("El Cliente con clave " + clave + " no existe. ERROR");
+            }
+        } else {
+            System.out.println("Una de las ciudades ingresadas no existe en el sistema. ERROR");
+        }
+    }
+
+
+    public static void consultasClientes() {
+        // METODO QUE REALIZA CONSULTAS SOBRE LOS CLIENTES
+        // SOLO HAY UNA OPCION, PARA REALIZARLA, EL CLIENTE DEBE EXISTIR
+        int opcion = 0;
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Se selecciono la opcion 5. Realizar consultas sobre Clientes");
+        while (opcion != 2) {
+            System.out.println("---------------------------------------------------------------------");
+            System.out.println("Ingrese una opcion");
+            System.out.println("1. Dada una clave de un Cliente (tipoDoc+numDoc), mostrar toda la información del mismo");
+            System.out.println("2. Volver al menu principal");
+            System.out.println("---------------------------------------------------------------------");
+            opcion = sc.nextInt();
+            switch (opcion) {
+                case 1:
+                    int numDoc;
+                    String tipoDoc;
+                    System.out.println("Ingrese un tipo de documento");
+                    tipoDoc = sc.next();
+                    System.out.println("Ingrese un numero de documento");
+                    numDoc = sc.nextInt();
+                    String clave = tipoDoc + numDoc;
+                    if (clientes.containsKey(clave)) {
+                        System.out.println("Informacion del Cliente solicitado: " + clientes.get(clave).toString());
+                    } else {
+                        System.out.println("No existe ningun Cliente con la clave " + clave);
+                    }
+                    break;
+                case 2:
+                    break;  // SE CORTA EL BUCLE
+                default:
+                    System.out.println("Opcion invalida. Por favor ingrese una opcion valida");
+            }
+        }
+    }
+
+    public static void consultasCiudades() {
+        // METODO QUE REALIZA CONSULTAS SOBRE LAS CIUDADES
+        int opcion = 0;
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Se selecciono la opcion 6. Realizar consultas sobre Ciudades");
+        while (opcion != 3) {
+            System.out.println("---------------------------------------------------------------------");
+            System.out.println("Ingrese una opcion");
+            System.out.println("1. Dado un codigo postal de una Ciudad, mostrar toda su informacion");
+            System.out.println("2. Dado un prefijo, devolver todas las Ciudades cuyo código postal comienza con dicho prefijo");
+            System.out.println("3. Volver al menu principal");
+            System.out.println("---------------------------------------------------------------------");
+            opcion = sc.nextInt();
+            switch (opcion) {
+                case 1:
+                    mostrarInfoCiudad();
+                    break;
+                case 2:
+                    //prefijoCiudad();
+                    break;
+                case 3:
+                    break; // SE CORTA EL BUCLE
+                default:
+                    System.out.println("Opcion invalida. Por favor ingrese una opcion valida");
+            }
+        }
+    }
+
+    public static void mostrarInfoCiudad() {
+        int codigo;
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Dado un codigo postal de una Ciudad, mostrar toda su informacion");
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Ingrese un codigo postal");
+        codigo = sc.nextInt();
+        System.out.println("---------------------------------------------------------------------");
+        // PARA REALIZAR LA CONSULTA, LA CIUDAD DEBE EXISTIR
+        if (ciudades.existeClave(codigo)) {
+            System.out.println("Informacion de la Ciudad solicitada: " + ciudades.obtenerDato(codigo).toString());
+        } else {
+            System.out.println("No existe ninguna Ciudad con el codigo postal " + codigo);
+        }
+    }
+ 
+    public static void mostrarSistema(){
+        int respuesta;
+        do{
+            System.out.println("<> 1. Mostrar las ciudades.\n<> 2. Mostrar las rutas.\n<> 3. Mostrar los pedidos"+
+            "\n<> 4. Mostrar los clientes.\n<> 5. Volver al menu.");
+            respuesta = sc.nextInt();
+            switch(respuesta){
+                case 1:
+                    System.out.println("------------SISTEMA DE CIUDADES------------");
+                    System.out.println(ciudades.toString());
+                break;
+                case 2:
+                    System.out.println("------------SISTEMA DE RUTAS------------");
+                    System.out.println(mapaRutas.toString());
+                break;
+                case 3:
+                    System.out.println("------------SISTEMA DE PEDIDOS------------");
+                    System.out.println(solicitudes.toString());
+                break;
+                case 4:
+                    System.out.println("------------SISTEMA DE CLIENTES------------");
+                    System.out.println(clientes.toString());
+                break;
+                case 5:
+                break;
+                default:
+                    System.out.println("RESPUESTA INVALIDA.");
+                break;
+            }
+        } while(respuesta!=5);
+            
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
 }

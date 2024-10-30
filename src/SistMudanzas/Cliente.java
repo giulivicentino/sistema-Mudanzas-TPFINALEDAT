@@ -79,6 +79,6 @@ public class Cliente {
     public String toString() {
         return "Cliente con TIPO: " + this.tipoDocumento + " N°" + this.numeroDocumento + ". "
                 + this.apellido + ", " + this.nombre + " con telefono: "
-                + this.telefono + " y correo: " + this.email;
+                + this.telefono + " y correo: " + this.email +"\n";
     }
 }
