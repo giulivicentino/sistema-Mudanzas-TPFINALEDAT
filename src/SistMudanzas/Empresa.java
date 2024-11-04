@@ -6,6 +6,7 @@ package SistMudanzas;
 
 import estructuras.Diccionario;
 import estructuras.GrafoEtiquetado;
+import estructuras.Lista;
 import estructuras.MapeoAMuchos;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -174,7 +175,7 @@ public class Empresa {
                     consultasClientes();
                     break;
                 case 6:
-                    //consultasCiudades();
+                    consultasCiudades();
                     break;
                 case 7:
                     //consultasViajes();
@@ -852,7 +853,7 @@ public class Empresa {
                     mostrarInfoCiudad();
                     break;
                 case 2:
-                    //prefijoCiudad();
+                    prefijoCiudad();
                     break;
                 case 3:
                     break; // SE CORTA EL BUCLE
@@ -861,6 +862,31 @@ public class Empresa {
             }
         }
     }
+
+  public static void prefijoCiudad() {
+        /*  SI EL PREFIJO ES 83 DEBERIA CONSIDERAR LISTAR TODAS LAS CIUDADES
+            CUYO CODIGO POSTAL ESTE EN EL RANGO 8300 HASTA 8399 */
+        // SI NO EXISTEN CIUDADES CON ESE PREFIJO, DEVUELVE LA LISTA VACIA Y ENVIAMOS UN MENSAJE POR PANTALLA
+        int prefijo;
+        Lista listaCiudades;
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Dado un prefijo, devolver todas las Ciudades cuyo codigo postal comienza con dicho prefijo");
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Ingrese un prefijo");
+        prefijo = sc.nextInt();
+        listaCiudades = ciudades.listarRango(prefijo * 100, (prefijo * 100) + 99);
+        System.out.println("---------------------------------------------------------------------");
+        if (listaCiudades.esVacia()) {
+            System.out.println("No existen Ciudades que el prefijo de su codigo postal sea " + prefijo);
+        } else {
+            System.out.println("Ciudades con prefijo " + prefijo + " en su codigo postal: " + listaCiudades.toString());
+        }
+    }
+    
+    
+    }
+
+
 
     public static void mostrarInfoCiudad() {
         int codigo;
