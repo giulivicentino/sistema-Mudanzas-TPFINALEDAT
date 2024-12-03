@@ -178,7 +178,7 @@ public class Empresa {
                     consultasCiudades();
                     break;
                 case 7:
-                    //consultasViajes();
+                    consultasViajes();
                     break;
                 case 8:
                     //verificarViajes();
@@ -883,10 +883,6 @@ public class Empresa {
         }
     }
     
-    
-    
-
-
 
     public static void mostrarInfoCiudad() {
         int codigo;
@@ -903,6 +899,262 @@ public class Empresa {
             System.out.println("No existe ninguna Ciudad con el codigo postal " + codigo);
         }
     }
+    public static void consultasViajes() {
+        int respuesta;
+        do {
+            System.out.println("-------------------------CONSULTA DE VIAJES--------------------------");
+            System.out.println(
+                    "<> 1. Obtener el camino que llegue de A a B que pase por menos ciudades.\n<> 2. Obtener el camino que llegue de A a B de menor distancia en kilómetros.\n<> 3. Obtener todos los caminos posibles de A a B que pasen por una"
+                            +
+                            " ciudad C sin pasar dos veces por la misma ciudad.\n<> 4. Verificar si es posible llegar de A a B recorriendo como máximo una cantidad X de kilómetros \n<> 5. Volver al Menu");
+            respuesta = sc.nextInt();
+            switch (respuesta) {
+                case 1:
+                    caminoMenosCiudades();
+                    break;
+                case 2:
+                   // caminoMenosKilometros();
+                    break;
+                case 3:
+                    //caminoPorCiudadIntermedia();
+                    break;
+                case 4:
+                    //caminoXkilometrosMax();
+                    break;
+                case 5:// VUELVE AL MENU
+                    break;
+                default:
+                    System.out.println("RESPUESTA INVALIDA.");
+                    break;
+            }
+        } while (respuesta != 5);
+    }
+
+    public static void caminoMenosCiudades() {
+        System.out.println("Ingrese el codigo de la ciudad A inicial");
+        int codigoA = sc.nextInt();
+        System.out.println("Ingrese el codigo de la ciudad B final");
+        int codigoB = sc.nextInt();
+
+        Lista camino = mapaRutas.caminoMasCorto(codigoA, codigoB);
+        if (camino != null) {
+            System.out.println("EL CAMINO QUE PASA POR MENOS CIUDADES ES: \n" + camino.toString());
+        } else {
+            System.out.println("NO EXISTE UN CAMINO ENTRE AMBAS CIUDADES");
+        }
+    }
+
+    public static void caminoMenosKilometros() {
+        System.out.println("Ingrese el codigo de la ciudad A inicial");
+        int codigoA = sc.nextInt();
+        System.out.println("Ingrese el codigo de la ciudad B final");
+        int codigoB = sc.nextInt();
+
+        Lista camino = mapaRutas.caminoMasRapido(codigoA, codigoB);
+        if (camino != null) {
+            System.out.println("EL CAMINO QUE TIENE MENOS KM ES: \n" + camino.toString());
+        } else {
+            System.out.println("NO EXISTE UN CAMINO ENTRE AMBAS CIUDADES");
+        }
+    }
+
+    public static void caminoXkilometrosMax() {
+        System.out.println("Ingrese el codigo de la ciudad A inicial");
+        int codigoA = sc.nextInt();
+        System.out.println("Ingrese el codigo de la ciudad B final");
+        int codigoB = sc.nextInt();
+        System.out.println("Ingrese la cantidad maxima de kilometros que desea recorrer:");
+        int cantKm = sc.nextInt();
+
+        double kmCamino = mapaRutas.caminoMasRapidoenKM(codigoA, codigoB, cantKm);
+        if (kmCamino < cantKm) {
+            System.out.println("ES POSIBLE IR DE " + codigoA + " A " + codigoB + " RECORRIENDO: " + kmCamino + " KM");
+        } else {
+            System.out.println("NO EXISTE UN CAMINO CON MENOS KM QUE EL INGRESADO ");
+        }
+    }
+
+    public static void caminoPorCiudadIntermedia() {
+        System.out.println("Ingrese el codigo de la ciudad A inicial");
+        int codigoA = sc.nextInt();
+        System.out.println("Ingrese el codigo de la ciudad C intermedia");
+        int codigoC = sc.nextInt();
+        System.out.println("Ingrese el codigo de la ciudad B final");
+        int codigoB = sc.nextInt();
+
+        Lista camino = mapaRutas.listarCaminosConCiudad(codigoA, codigoC, codigoB);
+        if (!camino.esVacia()) {
+            for(int i=1; i<=camino.longitud();i++){
+                Lista aux = (Lista)camino.recuperar(i);
+                System.out.println("POSIBLES CAMINOS: " + aux.toString());
+            }
+        } else {
+            System.out.println("NO EXISTEN CAMINOS");
+        }
+    }
+
+    public static void verificarViaje() {
+        int respuesta;
+        do {
+            System.out.println("-------------------VERIFICAR VIAJES-------------------");
+            System.out.println(
+                    "<> 1. Dada una ciudad A y una ciudad B mostrar todos los pedidos y calcular cuanto espacio total hace falta en el camion"
+                            +
+                            "\n<> 2.Verificar si sobra espacio para solicitudes intermedias.\n<> 3.Verificar un camino perfecto usando una lista. \n<> 4.Volver al Menu");
+            respuesta = sc.nextInt();
+            switch (respuesta) {
+                case 1:
+                    pedidosYCalcularEspacio();
+                    break;
+                case 2:
+                    espacioSobrante();
+                    break;
+                case 3:
+                    caminoPerfecto();
+                    break;
+                case 4:// volver al menu
+                    break;
+                default:
+                    System.out.println("RESPUESTA INVALIDA.");
+                    break;
+            }
+        } while (respuesta != 4);
+    }
+
+    public static void pedidosYCalcularEspacio() {
+        System.out.println("Ingrese el codigo de la ciudad A inicial");
+        int codigoA = sc.nextInt();
+        System.out.println("Ingrese el codigo de la ciudad B final");
+        int codigoB = sc.nextInt();
+        Lista listaSolicitudes = solicitudes.obtenerValores(codigoA + "" + codigoB);
+        if (mapaRutas.existeVertice(codigoA) && mapaRutas.existeVertice(codigoB)) {
+            if (!listaSolicitudes.esVacia()) {
+                int espacio = 0;
+                System.out.println("Las solicitudes son:\n " + listaSolicitudes.toString());
+                for (int i = 1; i <= listaSolicitudes.longitud(); i++) {
+                    Solicitud solicitud = (Solicitud) listaSolicitudes.recuperar(i);
+                    espacio = espacio + solicitud.getCantMetrosCubicos();
+                }
+                System.out.println("El espacio necesario de: " + codigoA + " a " + codigoB + " en el camion es de: "
+                        + espacio + " m3");
+            } else {
+                System.out.println("NO HAY PEDIDOS ENTRE LAS CIUDADES");
+            }
+        } else {
+            System.out.println("LOS CODIGOS DE CIUDADES SON INCORRECTOS");
+        }
+    }
+
+    // Dada una ciudad A y una ciudad B y una cantidad en metros cúbicos (espacio en
+    // un camión), verificar si sobra espacio en el camión y hacer un listado de
+    // posibles
+    // solicitudes a ciudades intermedias que se podrían aprovechar a cubrir,
+    // considerando el camino más corto en kilómetros
+    public static void espacioSobrante() {
+        System.out.println("Ingrese el codigo de la ciudad A inicial");
+        int codigoA = sc.nextInt();
+        System.out.println("Ingrese el codigo de la ciudad B final");
+        int codigoB = sc.nextInt();
+        System.out.println("Ingrese los metros cubicos del camion ");
+        int mtsNecesarios = sc.nextInt();
+
+        int espacio = obtenerEspacio(codigoA, codigoB);
+        if (espacio < mtsNecesarios) {
+            System.out.println("Hay suficiente espacio para otras solicitudes");
+            Lista camino = mapaRutas.caminoMasCorto(codigoA, codigoB);
+            for(int i=1;i<camino.longitud()-1;i++){
+                Lista listaSolicitudes = solicitudes.obtenerValores(codigoA + "" + camino.recuperar(i));
+                if(!listaSolicitudes.esVacia()){
+                    System.out.println("Posibles pedidos a despachar son:");
+                    for (int j = 1; j <= listaSolicitudes.longitud(); j++) {
+                        Solicitud solicitud = (Solicitud) listaSolicitudes.recuperar(j);
+                        System.out.println(solicitud.toString());
+                    }
+                }
+                
+            }
+        } else {
+            System.out.println("NO HAY SUFICIENTE ESPACIO PARA MAS PEDIDOS");
+        }
+    }
+
+    private static int obtenerEspacio(int codigoA, int codigoB) {
+        Lista listaSolicitudes = solicitudes.obtenerValores(codigoA + "" + codigoB);
+        int espacio = 0;
+        if (mapaRutas.existeVertice(codigoA) && mapaRutas.existeVertice(codigoB)) {
+            if (!listaSolicitudes.esVacia()) {
+                for (int i = 1; i <= listaSolicitudes.longitud(); i++) {
+                    Solicitud solicitud = (Solicitud) listaSolicitudes.recuperar(i);
+                    espacio = espacio + solicitud.getCantMetrosCubicos();
+                }
+            }
+        }
+        return espacio;
+    }
+
+    public static void caminoPerfecto() {
+        int capacidad, codigo, longitud, i = 1;
+        boolean exito = true;
+        Lista listaCodigo = new Lista();
+        System.out.println(
+                "Dada una lista de Ciudades y una cantidad de metros cubicos que corresponden a capacidad del camion, verificar si es un “camino perfecto”");
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Ingrese la cantidad de metros cubicos de capacidad del camion");
+        capacidad = sc.nextInt();
+        System.out.println("Ingrese una cantidad de Ciudades");
+        longitud = sc.nextInt();
+        if (longitud > 1) {
+            while (i <= longitud && exito) {
+                System.out.println("Ingrese el codigo postal de la Ciudad a insertar en la Lista");
+                codigo = sc.nextInt();
+                if (mapaRutas.existeVertice(codigo)) {
+                    listaCodigo.insertar(codigo, i);
+                } else {
+                    exito = false;
+                }
+                i++;
+            }
+            if (exito) {
+                verificarCaminoPerfecto(listaCodigo, capacidad);
+            } else {
+                System.out.println("Una de las Ciudades ingresadas no existe en el sistema. ERROR");
+            }
+        } else {
+            System.out.println("Ingrese un numero valido de Ciudades");
+        }
+    }
+
+    public static void verificarCaminoPerfecto(Lista lista, int capacidad) {
+        int i = 1, ocupacion = 0;
+        boolean exito = true;
+        while (i < lista.longitud() && exito) {
+            int origen = (int) lista.recuperar(i), destino = (int) lista.recuperar(i + 1);
+            if (mapaRutas.existeArco(origen, destino)) {
+                Lista listaPedidos = solicitudes.obtenerValores(origen + "" + destino);
+                if (listaPedidos.esVacia()) {
+                    System.out.println(
+                            "No es camino perfecto ya que no existen Pedidos entre " + origen + " y " + destino);
+                    exito = false;
+                } else {
+                    Solicitud solicitud = (Solicitud) listaPedidos.recuperar(1);
+                    ocupacion = ocupacion + solicitud.getCantMetrosCubicos();
+                }
+            } else {
+                exito = false;
+                System.out.println(
+                        "No es camino perfecto ya que no existe una ruta entre la Ciudad " + origen + " y " + destino);
+            }
+            i++;
+        }
+        if (exito) {
+            if (capacidad >= ocupacion) {
+                System.out.println("Es camino perfecto");
+            } else {
+                System.out.println("No es camino perfecto ya que la capacidad del camion no soporta todos los pedidos");
+            }
+        }
+    }
+
  
     public static void mostrarSistema(){
         int respuesta;

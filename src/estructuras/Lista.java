@@ -138,14 +138,17 @@ public class Lista {
                 resultado = resultado + aux.getElem().toString();
                 aux = aux.getEnlace();
                 if (aux != null) {
-                    resultado = resultado + ", \n\t    ";
+                    resultado = resultado + ", ";
                 }
             }
-            resultado = "[" + resultado + "]";
         }
         return resultado;
     }
 
+
+
+
+    
     public boolean equals(Lista l) {
         boolean esIgual = true;
         Nodo aux1 = this.cabecera;
