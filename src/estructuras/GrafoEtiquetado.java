@@ -1,5 +1,8 @@
 package estructuras;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GrafoEtiquetado {
 
     private NodoVert inicio;
@@ -439,62 +442,72 @@ public class GrafoEtiquetado {
     }
 
     public Lista listarCaminosConCiudad(Object origen, Object intermedio, Object destino) {
-        Lista caminos = new Lista();
+        Lista caminoAC = new Lista(); //desde origen hasta intermedio
+        Lista caminoCB = new Lista();   //desde intermedio hasta destino
         Lista visitados = new Lista();
-        Lista unCamino = new Lista();
+        Lista caminos = new Lista();
         NodoVert origenAux = ubicarVertice(origen);
-
-        if (origenAux != null && destino != null) {
-            listarCaminosAux(origenAux, destino, intermedio, visitados, caminos, unCamino, 0, false);
+    
+        if (origenAux != null && destino != null && intermedio!=null) { //si ingresaron parametros validos
+          Lista unCamino = new Lista();
+            caminoAC = caminoSinRepetir(origenAux, intermedio, visitados, unCamino, caminoAC);
+            visitados = concatenar(visitados, caminoAC);
+            unCamino.vaciar(); //reseteo
+            NodoVert intermedioAux = ubicarVertice(intermedio);
+            caminoCB = caminoSinRepetir(intermedioAux, destino, visitados, unCamino, caminoAC);
+        
+            if(!caminoAC.esVacia() && !caminoCB.esVacia()){
+                caminoCB.eliminar(0); //elimino el intermedio asi no se repite 
+            caminos = concatenar(caminoAC,caminoCB);
+            }
         }
         return caminos;
     }
-
-    private void listarCaminosAux(NodoVert vert, Object destino, Object intermedio, Lista visitados, Lista caminos,
-            Lista unCamino, int numCamino, boolean pasoPorIntermedio) {
+    
+    private Lista caminoSinRepetir(NodoVert vert, Object destino, Lista visitados, Lista unCamino, Lista res) {
         if (vert != null) {
-            unCamino.insertar(vert.getElem(), unCamino.longitud() + 1); // lo guardo como potencial camino
-            System.out.println("soy nodo: " + vert.getElem().toString()+"caminando por" + unCamino.toString());
-
-            if (vert.getElem().equals(intermedio)) { // Si estoy en la ciudad intermedia 'C', lo marco
-                pasoPorIntermedio = true;
-                System.out.println(
-                        "SOY EL CAMINO " + numCamino + ":  PASE POR C, y hasta ahora pase por: " + unCamino.toString());
-            }
-            // Si llegamos al destino y hemos pasado por 'intermedio', agregamos el camino actual a la lista de caminos
-          
-                if (vert.getElem().equals(destino)) { // ya estoy en el destino
-                    if (pasoPorIntermedio) {//y ya paso por C -> es un camino VALIDO
-                    System.out.println("SOY EL CAMINO VALIDO " + numCamino + ":  " + unCamino.toString());
-                    caminos.insertar(unCamino, numCamino); //guardo el camino valido para retornarlo
-                    
-                    //guardo todas las ciudades del camino VALIDO, en el de visitadas asi no las repito
-                    int longitudCamino = unCamino.longitud();
-                    for (int i = 0; i < longitudCamino; i++) {
-                        if(!vert.getElem().equals(intermedio)){
-                            visitados.insertar(vert.getElem(),visitados.longitud()+1); //para que no tache el intermedio!!
-                        }
-                    }
-                    numCamino = numCamino + 1; // itero posicion en el arreeglo final
-                    unCamino.vaciar(); // vacio el camino actual
-                    }
-                } else { // esto lo hace solo si no llego a destino
-                    NodoAdy ady = vert.getPrimerAdy(); // revisa todos los vecinos
-
-                    while (ady != null) { // va buscando todos sus posibles vecinos q no esten tachados hasta econtrar al primero
-                        if (visitados.localizar(ady.getVertice().getElem()) < 0) { // si el vecino que analiza no fue
-                             listarCaminosAux(ady.getVertice(), destino, intermedio, visitados, caminos, unCamino,numCamino, pasoPorIntermedio); // llamado recursivo con el vecino actual
-                        }
-                        ady = ady.getSigAdyacente();
-                    }
-                    System.out.println("soy nodo: " + vert.getElem().toString() + " y no tengo mas vecinos");
-                    unCamino.vaciar(); // vacio el camino actual por que esta en un nodo que no tiene vecinos y NO es
-                                       // el destino
+            visitados.insertar(vert.getElem(), visitados.longitud() + 1); //lo tacho para no volver a fisitarlo
+            unCamino.insertar(vert.getElem(), unCamino.longitud() + 1);
+            if (vert.getElem().equals(destino)) {
+                if ((unCamino.longitud() < res.longitud()) || res.esVacia()) {
+                    res = unCamino.clone();
                 }
-            // visitados.eliminar(visitados.longitud());
+            } else { //busca un vecino no visitado y hace el llamado recursivo con eso, si estan todos ya termina
+                NodoAdy ady = vert.getPrimerAdy();
+                while (ady != null) {
+                    if (visitados.localizar(ady.getVertice().getElem()) < 0) {
+                        res = caminoMasCortoAux(ady.getVertice(), destino, visitados, unCamino, res); // llamado recursivo con el vecino
+                    }
+                    ady = ady.getSigAdyacente();
+                }
+            }
+            unCamino.eliminar(unCamino.longitud()); // ya lo visite, lo elimino del camino
         }
+        return res;
     }
+  /*  concatenar: recibe dos listas L1 y L2 y devuelve una lista nueva con los elementos de L1 y L2
+        concatenados. Ej: si L1=[2,4,6] y L2=[5,1,6,7] debe devolver [2,4,6,5,1,6,7]
+     */
+    public static Lista concatenar(Lista lista1, Lista lista2) {
+        Lista conca = new Lista();
+        int i = 1, j = 1, longi = lista1.longitud() + lista2.longitud();
 
+        while (i <= lista1.longitud() || j <= lista2.longitud()) {
+            Object aux1, aux2;
+            aux1 = lista1.recuperar(i);
+            aux2 = lista2.recuperar(j);
+            if (i <= longi - lista2.longitud()) { //longitud de la primera lista
+                conca.insertar(aux1, i);
+                i++;
+            } else { //para la longitud de lista2
+                conca.insertar(aux2, i);
+                i++;
+                j++;
+            }
+        }
+
+        return conca;
+    }
     public boolean esVacio() {
         return this.inicio == null;
     }

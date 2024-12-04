@@ -35,4 +35,6 @@ public class NodoVert {
     public void setPrimerAdy(NodoAdy primerAdy) {
         this.primerAdy = primerAdy;
     }
+
+    
 }
