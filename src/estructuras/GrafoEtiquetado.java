@@ -207,12 +207,6 @@ public class GrafoEtiquetado {
     }
 
     public Lista caminoMasCorto(Object origen, Object destino) {
-        /* Dados dos elementos de TipoVertice (origen y destino), devuelve un camino
-        (lista de vertices) que indique el camino que pasa por menos vertices que
-        permite llegar del vertice origen al vertice destino. Si hay mas de un 
-        camino con igual cantidad de vertices, devuelve cualquiera de ellos. Si
-        alguno de los vertices no existe o no hay camino posible entre ellos 
-        devuelve la lista vacia */
         Lista visitados = new Lista();
         Lista actual = new Lista();
         Lista res = new Lista();
@@ -238,7 +232,7 @@ public class GrafoEtiquetado {
                 NodoAdy ady = vert.getPrimerAdy();
                 while (ady != null) {
                     if (visitados.localizar(ady.getVertice().getElem()) < 0) {
-                        res = caminoMasCortoAux(ady.getVertice(), destino, visitados, actual, res);
+                        res = caminoMasCortoAux(ady.getVertice(), destino, visitados, actual, res); //llamado recursivo con el vecino
                     }
                     ady = ady.getSigAdyacente();
                 }
@@ -329,12 +323,6 @@ public class GrafoEtiquetado {
     }
 
     public Lista caminoMasLargo(Object origen, Object destino) {
-        /* Dados dos elementos de TipoVertice (origen y destino), devuelve un camino
-        (lista de vertices) que indique el camino que pasa por más vertices (sin ciclos)
-        que permite llegar del vertice origen al vertice destino. Si hay mas de un
-        camino con igual cantidad de vertices, devuelve cualquiera de ellos. Si 
-        alguno de los vertices no existe o no hay camino posible entre ellos 
-        devuelve la lista vacía */
         Lista visitados = new Lista();
         Lista actual = new Lista();
         Lista res = new Lista();
@@ -434,38 +422,53 @@ public class GrafoEtiquetado {
     public Lista listarCaminosConCiudad(Object origen, Object intermedio, Object destino) {
         Lista caminos = new Lista();
         Lista visitados = new Lista();
+        Lista unCamino = new Lista();
         NodoVert origenAux = ubicarVertice(origen);
+        
 
         if (origenAux != null) {
-            listarCaminosAux(origenAux, destino, intermedio, visitados, caminos, false);
+            listarCaminosAux(origenAux, destino, intermedio, visitados, caminos,unCamino, 0,false);
         }
-
         return caminos;
     }
 
-    private void listarCaminosAux(NodoVert vert, Object destino, Object intermedio, Lista visitados, Lista caminos, boolean pasoPorIntermedio) {
+    private void listarCaminosAux(NodoVert vert, Object destino, Object intermedio, Lista visitados, Lista caminos,Lista unCamino,int numCamino, boolean pasoPorIntermedio) {
         if (vert != null) {
-            // Tacho la ciudad como visitada y la agrego al camino actual
-            visitados.insertar(vert.getElem(), visitados.longitud() + 1);
-
-            // Si estoy en la ciudad intermedia 'C', lo marco
-            if (vert.getElem().equals(intermedio)) {
+            visitados.insertar(vert.getElem(), visitados.longitud() + 1);// Tacho la ciudad como visitada 
+            unCamino.insertar(vert.getElem(), unCamino.longitud() + 1); // lo guardo como potencial camino
+            System.out.println("soy nodo: "+vert.getElem().toString());
+            if (vert.getElem().equals(intermedio)) {  // Si estoy en la ciudad intermedia 'C', lo marco
                 pasoPorIntermedio = true;
+                System.out.println("SOY EL CAMINO "+numCamino+ ":  PASE POR C, y hasta ahora pase por: "+unCamino.toString());
             }
-
             // Si llegamos al destino y hemos pasado por 'intermedio', agregamos el camino actual a la lista de caminos
             if (vert.getElem().equals(destino) && pasoPorIntermedio) {
-            } else {
+                System.out.println("SOY EL CAMINO "+numCamino+ ":  "+unCamino.toString());
+                caminos.insertar(unCamino, numCamino);
+                numCamino= numCamino +1; // itero posicion en el arreeglo final
+                unCamino.vaciar(); //vacio el camino actual
+
+            } else { //esto lo hace solo si no llego a destino
                 NodoAdy ady = vert.getPrimerAdy(); //revisa todos los vecinos
-                while (ady != null) {
-                    if (visitados.localizar(ady.getVertice().getElem()) < 0) {
-                        listarCaminosAux(ady.getVertice(), destino, intermedio, visitados, caminos, pasoPorIntermedio); //llamado recursivo con el vecino actual
+                
+
+                while (ady!=null &&! (ady.getVertice()).getElem().equals(destino)) { //que priorize terminar el camino antes que dar mas vueltas innesesarias
+                    ady = ady.getSigAdyacente();
+                }
+                if(ady.getVertice().getElem().equals(destino)){ //si freno por que ninguno de los adyacentes era el destino, enotnces q busque con el primero original
+                    ady = vert.getPrimerAdy(); //se "resetea"
+                }
+
+               while (ady != null) { //va buscando todos sus posibles vecinos q no esten tachados hasta econtrar al primero
+                    if (visitados.localizar(ady.getVertice().getElem()) < 0) { //si el vecino que analiza no fue una ciudad que ya paso
+                        listarCaminosAux(ady.getVertice(), destino, intermedio, visitados, caminos,unCamino,numCamino, pasoPorIntermedio); //llamado recursivo con el vecino actual
                     }
                     ady = ady.getSigAdyacente();
                 }
+                System.out.println("soy nodo: "+vert.getElem().toString()+" y no tengo mas vecinos");
+                unCamino.vaciar(); //vacio el camino actual por que esta en un nodo que no tiene vecinos y NO es el destino
             }
-
-            visitados.eliminar(visitados.longitud());
+            //visitados.eliminar(visitados.longitud());
         }
     }
 
