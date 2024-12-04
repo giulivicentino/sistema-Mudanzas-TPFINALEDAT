@@ -445,21 +445,21 @@ public class GrafoEtiquetado {
 
     private void listarCaminosAux(NodoVert vert, Object destino, Object intermedio, Lista visitados, Lista caminos, boolean pasoPorIntermedio) {
         if (vert != null) {
-            // Marcar la ciudad como visitada y agregarla al camino actual
-            visitados.insertar(vert.getClave(), visitados.longitud() + 1);
+            // Tacho la ciudad como visitada y la agrego al camino actual
+            visitados.insertar(vert.getElem(), visitados.longitud() + 1);
 
-            // Si pasamos por la ciudad intermedia 'C', lo marcamos
-            if (vert.getClave().equals(intermedio)) {
+            // Si estoy en la ciudad intermedia 'C', lo marco
+            if (vert.getElem().equals(intermedio)) {
                 pasoPorIntermedio = true;
             }
 
             // Si llegamos al destino y hemos pasado por 'intermedio', agregamos el camino actual a la lista de caminos
-            if (vert.getClave().equals(destino) && pasoPorIntermedio) {
+            if (vert.getElem().equals(destino) && pasoPorIntermedio) {
             } else {
-                NodoAdy ady = vert.getPrimerAdy();
+                NodoAdy ady = vert.getPrimerAdy(); //revisa todos los vecinos
                 while (ady != null) {
-                    if (visitados.localizar(ady.getVertice().getClave()) < 0) {
-                        listarCaminosAux(ady.getVertice(), destino, intermedio, visitados, caminos, pasoPorIntermedio);
+                    if (visitados.localizar(ady.getVertice().getElem()) < 0) {
+                        listarCaminosAux(ady.getVertice(), destino, intermedio, visitados, caminos, pasoPorIntermedio); //llamado recursivo con el vecino actual
                     }
                     ady = ady.getSigAdyacente();
                 }
