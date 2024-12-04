@@ -1005,7 +1005,7 @@ public class Empresa {
 
         Lista camino = mapaRutas.listarCaminosConCiudad(codigoA, codigoC, codigoB);
         if (!camino.esVacia()) {
-            for (int i = 1; i <= camino.longitud(); i++) { //para imprimir cada camino posible
+            for (int i = 1; i <= camino.longitud(); i++) { // para imprimir cada camino posible
                 Lista aux = (Lista) camino.recuperar(i);
                 System.out.println("POSIBLES CAMINOS: " + aux.toString());
             }
