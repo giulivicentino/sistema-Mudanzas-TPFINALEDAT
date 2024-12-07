@@ -256,6 +256,7 @@ public class GrafoEtiquetado {
             actual.eliminar(actual.longitud()); // ya lo visite, lo elimino del camino
             visitados.eliminar(visitados.longitud());
         }
+        
         return res;
     }
 
@@ -440,46 +441,72 @@ public class GrafoEtiquetado {
         }
     }
 
+    public int cantAdy(NodoVert origen){
+        NodoAdy ady =origen.getPrimerAdy();
+        int cant =0;
+        while(ady!=null){
+            cant++;
+            ady= ady.getSigAdyacente();
+        }
+        return cant;
+    }
+
     public Lista listarCaminosConCiudad(Object origen, Object intermedio, Object destino) {
         Lista caminoAC = new Lista(); // desde origen hasta intermedio
         Lista caminoCB = new Lista(); // desde intermedio hasta destino
         Lista visitadosTotal = new Lista();
+        Lista visitados = new Lista();
         Lista listaCaminos = new Lista();
         NodoVert origenAux = ubicarVertice(origen);
-        boolean existenCaminos=true;
- int i=0;
-        if (origenAux != null && destino != null && intermedio != null) { // si ingresaron parametros validos
+        NodoVert destinoAux = ubicarVertice(destino);
+        NodoVert intermedioAux = ubicarVertice(intermedio);
+        int i=0,cantPosibles=0;
+
+        cantPosibles = cantAdy(origenAux); //como maximo van a haber tantos caminos como asdyacentes tenga el nodo inicial
+        System.out.println("CANTIDAD CAMINOS POSIBLES: "+cantPosibles);
+
+        if (origenAux != null && destinoAux != null && intermedioAux != null) { // si ingresaron parametros validos
             while (i<2){
-                System.out.println("-------------------------------------------------------------------INTENTO "+i+"----------------------------------");
+           
+                
+             
+            System.out.println("-------------------------------------------------------------------INTENTO "+i+"----------------------------------");
                 // arma primera parte del camino hasta intermedio
                 Lista unCamino = new Lista();
                 Lista tachados = new Lista();
-                System.out.println("IntentoP1 :"+i+ "de encontrar camino AC"); 
+                System.out.println("IntentoP1 :"+i+ "de encontrar camino AC");
+                System.out.println("CON QUE CARAJO ESTOY LLAMANDO PARTE 1 origen: "+origenAux.getElem()+"  intermedioAux:"+intermedioAux.getElem().toString()); 
                 caminoAC = caminoSinRepetir(origenAux, intermedio, visitadosTotal,tachados, unCamino, caminoAC);
+                
+                //caminoAC= caminoMasCortoAux(origenAux, intermedio, visitadosTotal, unCamino, tachados);
                 visitadosTotal = concatenar(visitadosTotal, caminoAC); // de esta manera solamente marco como visitados los de un camino valido
-                System.out.println("camino AC "+caminoAC.toString()+"del IntentoP2 : "+i+" con estos visitidados: ");
+                visitadosTotal.eliminar(visitadosTotal.localizar(origenAux.getElem())); 
+                visitadosTotal.eliminar(visitadosTotal.localizar(intermedioAux.getElem())); //elimino el ultimo asi no me genera problemas la siguiente parte
+                System.out.println("camino AC "+caminoAC.toString()+"del IntentoP2 : "+i+" con estos visitidados: "+visitadosTotal.toString());
 
                 // arma segunda parte del camino hasta destino
+                unCamino.vaciar();
+                tachados.vaciar();
                 System.out.println("IntentoP2 :"+i+ "de encontrar camino CB");
-                NodoVert intermedioAux = ubicarVertice(intermedio);
-                System.out.println("CON QUE CARAJO ESTOY LLAMANDO intermedioAux:"+intermedioAux.getElem().toString()+" ,destino:"+destino.toString());
+                
+                System.out.println("CON QUE CARAJO ESTOY LLAMANDO PARTE 2 intermedioAux:"+intermedioAux.getElem().toString()+" ,destino:"+destino.toString());
                 if(intermedioAux!=null){
-                   caminoCB = caminoSinRepetir(intermedioAux, destino, visitadosTotal,tachados, unCamino, caminoAC);
+                  
+                   visitadosTotal.eliminar(visitadosTotal.localizar(destinoAux.getElem())); 
+                   visitadosTotal.eliminar(visitadosTotal.localizar(intermedioAux.getElem())); //elimino el ultimo asi no me genera problemas la siguiente parte
+                    caminoCB = caminoSinRepetir(intermedioAux, destino, visitadosTotal,tachados, unCamino, caminoAC);
                    visitadosTotal = concatenar(visitadosTotal, caminoCB); // de esta manera solamente marco como visitados los de un camino valido
-                   System.out.println("camino CB "+caminoCB.toString()+"del IntentoP2 :"+i+" con estos visitidados: ");
-                caminoCB.eliminar(0); // elimino el intermedio asi no aparece doble como camino final
+                   System.out.println("camino CB "+caminoCB.toString()+"del IntentoP2 :"+i+" con estos visitidados: "+visitadosTotal.toString());
                 }
                
                 if (!caminoAC.esVacia() && !caminoCB.esVacia()) {
                     System.out.println("ENCONTRE UN CAMINO POSIBLE" + concatenar(caminoAC, caminoCB).toString());
                     listaCaminos.insertar(concatenar(caminoAC, caminoCB), listaCaminos.longitud() + 1); // agrega el camino juntado a la coleccion de caminos
-                    i++;
-                } else {
-                    existenCaminos = false;
-                }
-            
-
-            } // si existe parte 1 y existe parte 2
+                    
+                } 
+                i++;
+            }
+            //} // si existe parte 1 y existe parte 
             //va a seguir en el bucle si encontro AMBAS partes de un camino, sino ya no existen mas
             System.out.println("Ya no hay mas caminos posibles");
         }
@@ -489,7 +516,7 @@ public class GrafoEtiquetado {
     private Lista caminoSinRepetir(NodoVert vert, Object destino, Lista visitados, Lista tachados, Lista unCamino, Lista res) {
         if (vert != null) {
             
-            //System.out.println("SOY :"+vert.getElem().toString());
+           // System.out.println("SOY :"+vert.getElem().toString()+" y recorrí: "+unCamino.toString());
             tachados.insertar(vert.getElem(), tachados.longitud() + 1); //lo tacho para no volver a visitarlo
             unCamino.insertar(vert.getElem(), unCamino.longitud() + 1);
             if (vert.getElem().equals(destino)) {
@@ -499,16 +526,16 @@ public class GrafoEtiquetado {
             } else { //busca un vecin7o no visitado y hace el llamado recursivo con eso, si estan todos ya termina
                 NodoAdy ady = vert.getPrimerAdy();
                 while (ady != null) {
-                    System.out.println("BUSCO el ady: "+ady.getVertice().getElem()+" en visitados: "+visitados.toString());
+                    //System.out.println("BUSCO el ady: "+ady.getVertice().getElem()+" en visitados: "+visitados.toString());
                     if (visitados.localizar(ady.getVertice().getElem()) < 0 ) {//  busca que no ente en cualquier otro camino anterior
-                        System.out.println("NO estaba en visitados, BUSCO el ady: "+ady.getVertice().getElem()+" en tachados: "+tachados.toString());
+                   //    System.out.println("NO estaba en visitados, BUSCO el ady: "+ady.getVertice().getElem()+" en tachados: "+tachados.toString());
                         if (tachados.localizar(ady.getVertice().getElem()) < 0) {//los busca en la lista de tachados del llamado
                             res = caminoSinRepetir(ady.getVertice(), destino, visitados, tachados, unCamino, res); // llamado recursivo con el vecino
                         }else{
-                            System.out.println("si estaba en tachados");
+                        //    System.out.println("si estaba en tachados");
                         }
                     }else{
-                        System.out.println("si estaba en visitados");
+                     //   System.out.println("si estaba en visitados");
                     }
                    
                     ady = ady.getSigAdyacente();

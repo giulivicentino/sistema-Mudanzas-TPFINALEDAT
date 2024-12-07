@@ -956,7 +956,7 @@ public class Empresa {
                     caminoPorCiudadIntermedia();
                     break;
                 case 4:
-                    // caminoXkilometrosMax();
+                    caminoXkilometrosMax();
                     break;
                 case 5:// VUELVE AL MENU
                     break;
