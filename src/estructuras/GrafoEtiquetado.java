@@ -242,14 +242,13 @@ public class GrafoEtiquetado {
             actual.insertar(vert.getElem(), actual.longitud() + 1);
             if (vert.getElem().equals(destino)) {
                 if ((actual.longitud() < res.longitud()) || res.esVacia()) {
-                    res = actual.clone();
+                    res = actual.clone(); 
                 }
             } else {
                 NodoAdy ady = vert.getPrimerAdy();
                 while (ady != null) {
                     if (visitados.localizar(ady.getVertice().getElem()) < 0) {
-                        res = caminoMasCortoAux(ady.getVertice(), destino, visitados, actual, res); // llamado recursivo
-                                                                                                    // con el vecino
+                        res = caminoMasCortoAux(ady.getVertice(), destino, visitados, actual, res); // llamado recursivo con el vecino
                     }
                     ady = ady.getSigAdyacente();
                 }
@@ -442,46 +441,81 @@ public class GrafoEtiquetado {
     }
 
     public Lista listarCaminosConCiudad(Object origen, Object intermedio, Object destino) {
-        Lista caminoAC = new Lista(); //desde origen hasta intermedio
-        Lista caminoCB = new Lista();   //desde intermedio hasta destino
-        Lista visitados = new Lista();
-        Lista caminos = new Lista();
+        Lista caminoAC = new Lista(); // desde origen hasta intermedio
+        Lista caminoCB = new Lista(); // desde intermedio hasta destino
+        Lista visitadosTotal = new Lista();
+        Lista listaCaminos = new Lista();
         NodoVert origenAux = ubicarVertice(origen);
-    
-        if (origenAux != null && destino != null && intermedio!=null) { //si ingresaron parametros validos
-          Lista unCamino = new Lista();
-            caminoAC = caminoSinRepetir(origenAux, intermedio, visitados, unCamino, caminoAC);
-            visitados = concatenar(visitados, caminoAC);
-            unCamino.vaciar(); //reseteo
-            NodoVert intermedioAux = ubicarVertice(intermedio);
-            caminoCB = caminoSinRepetir(intermedioAux, destino, visitados, unCamino, caminoAC);
-        
-            if(!caminoAC.esVacia() && !caminoCB.esVacia()){
-                caminoCB.eliminar(0); //elimino el intermedio asi no se repite 
-            caminos = concatenar(caminoAC,caminoCB);
-            }
+        boolean existenCaminos=true;
+ int i=0;
+        if (origenAux != null && destino != null && intermedio != null) { // si ingresaron parametros validos
+            while (i<2){
+                System.out.println("-------------------------------------------------------------------INTENTO "+i+"----------------------------------");
+                // arma primera parte del camino hasta intermedio
+                Lista unCamino = new Lista();
+                Lista tachados = new Lista();
+                System.out.println("IntentoP1 :"+i+ "de encontrar camino AC"); 
+                caminoAC = caminoSinRepetir(origenAux, intermedio, visitadosTotal,tachados, unCamino, caminoAC);
+                visitadosTotal = concatenar(visitadosTotal, caminoAC); // de esta manera solamente marco como visitados los de un camino valido
+                System.out.println("camino AC "+caminoAC.toString()+"del IntentoP2 : "+i+" con estos visitidados: ");
+
+                // arma segunda parte del camino hasta destino
+                System.out.println("IntentoP2 :"+i+ "de encontrar camino CB");
+                NodoVert intermedioAux = ubicarVertice(intermedio);
+                System.out.println("CON QUE CARAJO ESTOY LLAMANDO intermedioAux:"+intermedioAux.getElem().toString()+" ,destino:"+destino.toString());
+                if(intermedioAux!=null){
+                   caminoCB = caminoSinRepetir(intermedioAux, destino, visitadosTotal,tachados, unCamino, caminoAC);
+                   visitadosTotal = concatenar(visitadosTotal, caminoCB); // de esta manera solamente marco como visitados los de un camino valido
+                   System.out.println("camino CB "+caminoCB.toString()+"del IntentoP2 :"+i+" con estos visitidados: ");
+                caminoCB.eliminar(0); // elimino el intermedio asi no aparece doble como camino final
+                }
+               
+                if (!caminoAC.esVacia() && !caminoCB.esVacia()) {
+                    System.out.println("ENCONTRE UN CAMINO POSIBLE" + concatenar(caminoAC, caminoCB).toString());
+                    listaCaminos.insertar(concatenar(caminoAC, caminoCB), listaCaminos.longitud() + 1); // agrega el camino juntado a la coleccion de caminos
+                    i++;
+                } else {
+                    existenCaminos = false;
+                }
+            
+
+            } // si existe parte 1 y existe parte 2
+            //va a seguir en el bucle si encontro AMBAS partes de un camino, sino ya no existen mas
+            System.out.println("Ya no hay mas caminos posibles");
         }
-        return caminos;
+        return listaCaminos;
     }
-    
-    private Lista caminoSinRepetir(NodoVert vert, Object destino, Lista visitados, Lista unCamino, Lista res) {
+
+    private Lista caminoSinRepetir(NodoVert vert, Object destino, Lista visitados, Lista tachados, Lista unCamino, Lista res) {
         if (vert != null) {
-            visitados.insertar(vert.getElem(), visitados.longitud() + 1); //lo tacho para no volver a fisitarlo
+            
+            //System.out.println("SOY :"+vert.getElem().toString());
+            tachados.insertar(vert.getElem(), tachados.longitud() + 1); //lo tacho para no volver a visitarlo
             unCamino.insertar(vert.getElem(), unCamino.longitud() + 1);
             if (vert.getElem().equals(destino)) {
-                if ((unCamino.longitud() < res.longitud()) || res.esVacia()) {
-                    res = unCamino.clone();
-                }
-            } else { //busca un vecino no visitado y hace el llamado recursivo con eso, si estan todos ya termina
+                  res = unCamino.clone();
+                    //System.out.println("QUE ENCONTRE:"+unCamino.toString());
+                
+            } else { //busca un vecin7o no visitado y hace el llamado recursivo con eso, si estan todos ya termina
                 NodoAdy ady = vert.getPrimerAdy();
                 while (ady != null) {
-                    if (visitados.localizar(ady.getVertice().getElem()) < 0) {
-                        res = caminoMasCortoAux(ady.getVertice(), destino, visitados, unCamino, res); // llamado recursivo con el vecino
+                    System.out.println("BUSCO el ady: "+ady.getVertice().getElem()+" en visitados: "+visitados.toString());
+                    if (visitados.localizar(ady.getVertice().getElem()) < 0 ) {//  busca que no ente en cualquier otro camino anterior
+                        System.out.println("NO estaba en visitados, BUSCO el ady: "+ady.getVertice().getElem()+" en tachados: "+tachados.toString());
+                        if (tachados.localizar(ady.getVertice().getElem()) < 0) {//los busca en la lista de tachados del llamado
+                            res = caminoSinRepetir(ady.getVertice(), destino, visitados, tachados, unCamino, res); // llamado recursivo con el vecino
+                        }else{
+                            System.out.println("si estaba en tachados");
+                        }
+                    }else{
+                        System.out.println("si estaba en visitados");
                     }
+                   
                     ady = ady.getSigAdyacente();
                 }
             }
-            unCamino.eliminar(unCamino.longitud()); // ya lo visite, lo elimino del camino
+            tachados.eliminar(tachados.longitud()); // en caso de que termina la ejecucion y no encontro camino, entonces "libera" los nosods q visito
+            unCamino.eliminar(unCamino.longitud()); // ya encontre un camino, vacio la lista
         }
         return res;
     }
@@ -508,6 +542,7 @@ public class GrafoEtiquetado {
 
         return conca;
     }
+    
     public boolean esVacio() {
         return this.inicio == null;
     }

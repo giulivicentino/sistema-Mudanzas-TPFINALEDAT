@@ -129,7 +129,7 @@ public class Lista {
 
     @Override
     public String toString() {
-        String resultado = "";
+        String resultado = "[";
         Nodo aux = this.cabecera;
         if (esVacia()) {
             resultado = "La lista esta vacia";
@@ -141,6 +141,7 @@ public class Lista {
                     resultado = resultado + ", ";
                 }
             }
+            resultado = resultado +"]";
         }
         return resultado;
     }
