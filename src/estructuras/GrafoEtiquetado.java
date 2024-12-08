@@ -452,103 +452,79 @@ public class GrafoEtiquetado {
     }
 
     public Lista listarCaminosConCiudad(Object origen, Object intermedio, Object destino) {
-        Lista caminoAC = new Lista(); // desde origen hasta intermedio
-        Lista caminoCB = new Lista(); // desde intermedio hasta destino
         Lista visitadosTotal = new Lista();
         Lista visitados = new Lista();
-        Lista listaCaminos = new Lista();
+        Lista listaCaminosFinal = new Lista();
+        
         NodoVert origenAux = ubicarVertice(origen);
         NodoVert destinoAux = ubicarVertice(destino);
         NodoVert intermedioAux = ubicarVertice(intermedio);
         int i=0,cantPosibles=0;
 
         cantPosibles = cantAdy(origenAux); //como maximo van a haber tantos caminos como asdyacentes tenga el nodo inicial
-        System.out.println("CANTIDAD CAMINOS POSIBLES: "+cantPosibles);
 
         if (origenAux != null && destinoAux != null && intermedioAux != null) { // si ingresaron parametros validos
-            while (i<2){
-           
+            //while (i<2){
+            while (i<cantPosibles){ //sigue construyendo la lista como cant max de ady q tenga el origen
+                Lista unCamino = new Lista(); // desde origen hasta intermedio
+                Lista resp = new Lista();
+                Lista resp2 = new Lista();
+                boolean pasoInter =false;
+                //para sumarlo al acumulador de visitados, le saco el origen, destino y el intermedio asi no interfiere para buscar despues
                 
-             
-            System.out.println("-------------------------------------------------------------------INTENTO "+i+"----------------------------------");
-                // arma primera parte del camino hasta intermedio
-                Lista unCamino = new Lista();
-                Lista tachados = new Lista();
-                System.out.println("IntentoP1 :"+i+ "de encontrar camino AC");
-                System.out.println("CON QUE CARAJO ESTOY LLAMANDO PARTE 1 origen: "+origenAux.getElem()+"  intermedioAux:"+intermedioAux.getElem().toString()); 
-                caminoAC = caminoSinRepetir(origenAux, intermedio, visitadosTotal,tachados, unCamino, caminoAC);
+                resp = caminoSinRepetir(origenAux,intermedio, destino, visitados, visitadosTotal, unCamino,pasoInter, resp);
                 
-                //caminoAC= caminoMasCortoAux(origenAux, intermedio, visitadosTotal, unCamino, tachados);
-                visitadosTotal = concatenar(visitadosTotal, caminoAC); // de esta manera solamente marco como visitados los de un camino valido
-                visitadosTotal.eliminar(visitadosTotal.localizar(origenAux.getElem())); 
-                visitadosTotal.eliminar(visitadosTotal.localizar(intermedioAux.getElem())); //elimino el ultimo asi no me genera problemas la siguiente parte
-                System.out.println("camino AC "+caminoAC.toString()+"del IntentoP2 : "+i+" con estos visitidados: "+visitadosTotal.toString());
+                if(!resp.esVacia()){
+                resp2= resp.clone();
+                
+                listaCaminosFinal.insertar(resp2, listaCaminosFinal.longitud()+1);
+                
+                resp.eliminar(resp.localizar(origen));
+                resp.eliminar(resp.localizar(intermedio));
+                resp.eliminar(resp.localizar(destino));
 
-                // arma segunda parte del camino hasta destino
-                unCamino.vaciar();
-                tachados.vaciar();
-                System.out.println("IntentoP2 :"+i+ "de encontrar camino CB");
+                visitadosTotal = concatenar(visitadosTotal,resp); //le agrego los nuevos asi no los recorre 
                 
-                System.out.println("CON QUE CARAJO ESTOY LLAMANDO PARTE 2 intermedioAux:"+intermedioAux.getElem().toString()+" ,destino:"+destino.toString());
-                if(intermedioAux!=null){
-                  
-                   visitadosTotal.eliminar(visitadosTotal.localizar(destinoAux.getElem())); 
-                   visitadosTotal.eliminar(visitadosTotal.localizar(intermedioAux.getElem())); //elimino el ultimo asi no me genera problemas la siguiente parte
-                    caminoCB = caminoSinRepetir(intermedioAux, destino, visitadosTotal,tachados, unCamino, caminoAC);
-                   visitadosTotal = concatenar(visitadosTotal, caminoCB); // de esta manera solamente marco como visitados los de un camino valido
-                   System.out.println("camino CB "+caminoCB.toString()+"del IntentoP2 :"+i+" con estos visitidados: "+visitadosTotal.toString());
                 }
-               
-                if (!caminoAC.esVacia() && !caminoCB.esVacia()) {
-                    System.out.println("ENCONTRE UN CAMINO POSIBLE" + concatenar(caminoAC, caminoCB).toString());
-                    listaCaminos.insertar(concatenar(caminoAC, caminoCB), listaCaminos.longitud() + 1); // agrega el camino juntado a la coleccion de caminos
-                    
-                } 
                 i++;
             }
-            //} // si existe parte 1 y existe parte 
-            //va a seguir en el bucle si encontro AMBAS partes de un camino, sino ya no existen mas
-            System.out.println("Ya no hay mas caminos posibles");
+            
         }
-        return listaCaminos;
+        return listaCaminosFinal;
     }
 
-    private Lista caminoSinRepetir(NodoVert vert, Object destino, Lista visitados, Lista tachados, Lista unCamino, Lista res) {
+    private Lista caminoSinRepetir(NodoVert vert,Object intermedio ,Object destino, Lista visitados,Lista visitadosTotal, Lista unCamino,boolean pasoInter,Lista res) {
         if (vert != null) {
-            
-           // System.out.println("SOY :"+vert.getElem().toString()+" y recorrí: "+unCamino.toString());
-            tachados.insertar(vert.getElem(), tachados.longitud() + 1); //lo tacho para no volver a visitarlo
+           
+            visitados.insertar(vert.getElem(), visitados.longitud() + 1); //lo tacho para no volver a visitarlo
             unCamino.insertar(vert.getElem(), unCamino.longitud() + 1);
-            if (vert.getElem().equals(destino)) {
-                  res = unCamino.clone();
-                    //System.out.println("QUE ENCONTRE:"+unCamino.toString());
+            if (vert.getElem().equals(intermedio)) {
+            pasoInter=true;
+            }
+            if (vert.getElem().equals(destino)&&pasoInter) {
+                if ((unCamino.longitud() < res.longitud()) || res.esVacia()) { //para hacer que tambien sea el mas corto pero esto es opcional
+                res = unCamino.clone();
                 
-            } else { //busca un vecin7o no visitado y hace el llamado recursivo con eso, si estan todos ya termina
+                }
+            } else { //busca un vecino no visitado y hace el llamado recursivo con eso, si estan todos ya termina
                 NodoAdy ady = vert.getPrimerAdy();
                 while (ady != null) {
-                    //System.out.println("BUSCO el ady: "+ady.getVertice().getElem()+" en visitados: "+visitados.toString());
-                    if (visitados.localizar(ady.getVertice().getElem()) < 0 ) {//  busca que no ente en cualquier otro camino anterior
-                   //    System.out.println("NO estaba en visitados, BUSCO el ady: "+ady.getVertice().getElem()+" en tachados: "+tachados.toString());
-                        if (tachados.localizar(ady.getVertice().getElem()) < 0) {//los busca en la lista de tachados del llamado
-                            res = caminoSinRepetir(ady.getVertice(), destino, visitados, tachados, unCamino, res); // llamado recursivo con el vecino
-                        }else{
-                        //    System.out.println("si estaba en tachados");
-                        }
-                    }else{
-                     //   System.out.println("si estaba en visitados");
+                    if (visitadosTotal.localizar(ady.getVertice().getElem()) < 0 && visitados.localizar(ady.getVertice().getElem()) < 0) {//  busca que no ente en cualquier otro camino anterior
+                        res = caminoSinRepetir(ady.getVertice(),intermedio, destino, visitados, visitadosTotal, unCamino,pasoInter, res); // llamado recursivo con el vecino
                     }
-                   
-                    ady = ady.getSigAdyacente();
-                }
+                ady = ady.getSigAdyacente(); //cambia de ady
+                }    
             }
-            tachados.eliminar(tachados.longitud()); // en caso de que termina la ejecucion y no encontro camino, entonces "libera" los nosods q visito
+            
+            //si no llego a destino 
+            visitados.eliminar(visitados.longitud()); // en caso de que termina la ejecucion y no encontro camino, entonces "libera" los nosods q visito
             unCamino.eliminar(unCamino.longitud()); // ya encontre un camino, vacio la lista
         }
-        return res;
-    }
-  /*  concatenar: recibe dos listas L1 y L2 y devuelve una lista nueva con los elementos de L1 y L2
-        concatenados. Ej: si L1=[2,4,6] y L2=[5,1,6,7] debe devolver [2,4,6,5,1,6,7]
-     */
+            return res;
+        }
+        
+    
+
     public static Lista concatenar(Lista lista1, Lista lista2) {
         Lista conca = new Lista();
         int i = 1, j = 1, longi = lista1.longitud() + lista2.longitud();
@@ -569,7 +545,6 @@ public class GrafoEtiquetado {
 
         return conca;
     }
-    
     public boolean esVacio() {
         return this.inicio == null;
     }

@@ -997,20 +997,18 @@ public class Empresa {
 
     public static void caminoPorCiudadIntermedia() {
         System.out.println("Ingrese el codigo de la ciudad A inicial");
-       // int codigoA = sc.nextInt();
-       int codigoA=1000;
+        int codigoA = sc.nextInt();
         System.out.println("Ingrese el codigo de la ciudad C intermedia");
-       // int codigoC = sc.nextInt();
-       int codigoC=5152;
+        int codigoC = sc.nextInt();
+
         System.out.println("Ingrese el codigo de la ciudad B final");
-        //int codigoB = sc.nextInt();
-        int codigoB=8300;
-       
+        int codigoB = sc.nextInt();
+
         Lista camino = mapaRutas.listarCaminosConCiudad(codigoA, codigoC, codigoB);
         if (!camino.esVacia()) {
             for (int i = 1; i <= camino.longitud(); i++) { // para imprimir cada camino posible
-                Lista aux = (Lista) camino.recuperar(i);
-                System.out.println("POSIBLES CAMINOS: " + aux.toString());
+                Object aux = camino.recuperar(i);
+                System.out.println("POSIBLE CAMINO N°: "+i+"  " + aux.toString());
             }
         } else {
             System.out.println("NO EXISTEN CAMINOS");
@@ -1047,12 +1045,12 @@ public class Empresa {
                     pedidosYCalcularEspacio();
                     break;
                 case 2:
-                     espacioSobrante();
+                    espacioSobrante();
                     break;
                 case 3:
                     caminoPerfecto();
                     break;
-                case 4:// volver al menu
+                case 4:
                     break;
                 default:
                     System.out.println("RESPUESTA INVALIDA.");
