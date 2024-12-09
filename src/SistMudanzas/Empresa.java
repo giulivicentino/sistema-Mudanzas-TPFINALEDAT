@@ -33,7 +33,6 @@ public class Empresa {
     private static FileWriter logWriter;
 
     public static void main(String[] args) {
-        System.out.println("QUE PASAAA");
         boolean exito = cargarDatos();
 
         if (exito) {
@@ -92,9 +91,7 @@ public class Empresa {
         return exito;
     }
 
-    public static void cargarCiudad(int codigo, String nombre, String provincia) {
-        // METODO QUE CARGA UNA CIUDAD AL AVL DICCIONARIO, Y AL GRAFO PARA EL MAPA DE
-        // RUTAS
+    public static void cargarCiudad(int codigo, String nombre, String provincia) { //carga ciudad al AVL diccionario y rutas a un GRAFO
         Ciudad ciudad = new Ciudad(codigo, nombre, provincia);
         boolean exito = ciudades.insertar(codigo, ciudad) && mapaRutas.insertarVertice(codigo);
         if (exito) {
@@ -155,9 +152,9 @@ public class Empresa {
         // MENU PRINCIPAL
         int opcion = 0;
         while (opcion != 10) {
-            System.out.println("...................................................... ");
-            System.out.println("               MENU - MUDANZAS COMPARTIDAS");
-            System.out.println("......................................................");
+            System.out.println("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»««««««««««««««««««««««««««««««««««««");
+            System.out.println("                    MENU - MUDANZAS COMPARTIDAS");
+            
             System.out.println("Ingrese una opcion");
             System.out.println("1- Realizar ABM de Ciudades");
             System.out.println("2- Realizar ABM de la Red de Rutas");
@@ -169,7 +166,7 @@ public class Empresa {
             System.out.println("8- Verificar Viajes");
             System.out.println("9- Mostrar el sistema");
             System.out.println("10- Finalizar el programa");
-            System.out.println("---------------------------------------------------------------------");
+            System.out.println("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»««««««««««««««««««««««««««««««««««««");
             opcion = sc.nextInt();
             switch (opcion) {
                 case 1:
@@ -245,8 +242,7 @@ public class Empresa {
     // 2-----------------------------------------------------------------------------------------------------------------------------------------------
     public static void ABMciudades() {
         int opcion = 0;
-        System.out.println("---------------------------------------------------------------------");
-        System.out.println("Se selecciono la opcion 1. Realizar ABM de Ciudades");
+        System.out.println("--- ABM CIUDADES ---");
         while (opcion != 4) {
             System.out.println("---------------------------------------------------------------------");
             System.out.println("Ingrese una opcion");
@@ -368,8 +364,8 @@ public class Empresa {
 
     public static void ABMrutas() {
         int opcion = 0;
-        System.out.println("---------------------------------------------------------------------");
-        System.out.println("Se selecciono la opcion 2. Realizar ABM de Rutas");
+        System.out.println("--- ABM RUTAS ---");
+
         while (opcion != 4) {
             System.out.println("---------------------------------------------------------------------");
             System.out.println("Ingrese una opcion");
@@ -461,8 +457,7 @@ public class Empresa {
     // 4-----------------------------------------------------------------------------------------------------------------------------------------------
     public static void ABMclientes() {
         int opcion = 0;
-        System.out.println("---------------------------------------------------------------------");
-        System.out.println("Se selecciono la opcion 3. Realizar ABM de Clientes");
+        System.out.println("--- ABM CLIENTES ---");
         while (opcion != 4) {
             System.out.println("---------------------------------------------------------------------");
             System.out.println("Ingrese una opcion");
@@ -614,8 +609,7 @@ public class Empresa {
     // 5-----------------------------------------------------------------------------------------------------------------------------------------------
     public static void ABMpedidos() {
         int opcion = 0;
-        System.out.println("---------------------------------------------------------------------");
-        System.out.println("Se selecciono la opcion 4. Realizar ABM de Pedidos");
+        System.out.println("--- ABM PEDIDOS ---");
         while (opcion != 4) {
             System.out.println("---------------------------------------------------------------------");
             System.out.println("Ingrese una opcion");
@@ -830,8 +824,7 @@ public class Empresa {
         // METODO QUE REALIZA CONSULTAS SOBRE LOS CLIENTES
         // SOLO HAY UNA OPCION, PARA REALIZARLA, EL CLIENTE DEBE EXISTIR
         int opcion = 0;
-        System.out.println("---------------------------------------------------------------------");
-        System.out.println("Se selecciono la opcion 5. Realizar consultas sobre Clientes");
+        System.out.println("--- CONSULTAS CLIENTES ---");
         while (opcion != 2) {
             System.out.println("---------------------------------------------------------------------");
             System.out.println("Ingrese una opcion");
@@ -868,8 +861,7 @@ public class Empresa {
     public static void consultasCiudades() {
         // METODO QUE REALIZA CONSULTAS SOBRE LAS CIUDADES
         int opcion = 0;
-        System.out.println("---------------------------------------------------------------------");
-        System.out.println("Se selecciono la opcion 6. Realizar consultas sobre Ciudades");
+        System.out.println("--- CONSULTAS CIUDADES ---");
         while (opcion != 3) {
             System.out.println("---------------------------------------------------------------------");
             System.out.println("Ingrese una opcion");
@@ -939,7 +931,7 @@ public class Empresa {
     public static void consultasViajes() {
         int respuesta;
         do {
-            System.out.println("-------------------------CONSULTA DE VIAJES--------------------------");
+            System.out.println("--- CONSULTA DE VIAJES ---");
             System.out.println(
                     "<> 1. Obtener el camino que llegue de A a B que pase por menos ciudades.\n<> 2. Obtener el camino que llegue de A a B de menor distancia en kilómetros.\n<> 3. Obtener todos los caminos posibles de A a B que pasen por una"
                             +
@@ -1034,7 +1026,7 @@ public class Empresa {
     public static void verificarViaje() {
         int respuesta;
         do {
-            System.out.println("-------------------VERIFICAR VIAJES-------------------");
+            System.out.println("--- VERIFICAR VIAJES ---");
             System.out.println(
                     "<> 1. Dada una ciudad A y una ciudad B mostrar todos los pedidos y calcular cuanto espacio total hace falta en el camion"
                             +
@@ -1203,7 +1195,9 @@ public class Empresa {
 
     public static void mostrarSistema() {
         int respuesta;
+        
         do {
+            System.out.println("--- MOSTRAR SISTEMA ---");
             System.out.println("<> 1. Mostrar las ciudades.\n<> 2. Mostrar las rutas.\n<> 3. Mostrar los pedidos" +
                     "\n<> 4. Mostrar los clientes.\n<> 5. Volver al menu.");
             respuesta = sc.nextInt();
