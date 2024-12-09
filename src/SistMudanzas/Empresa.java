@@ -156,16 +156,16 @@ public class Empresa {
             System.out.println("                    MENU - MUDANZAS COMPARTIDAS");
             
             System.out.println("Ingrese una opcion");
-            System.out.println("1- Realizar ABM de Ciudades");
-            System.out.println("2- Realizar ABM de la Red de Rutas");
-            System.out.println("3- Realizar ABM de Clientes");
-            System.out.println("4- Realizar ABM de Pedidos");
-            System.out.println("5- Realizar consultas sobre Clientes");
-            System.out.println("6- Realizar consultas sobre Ciudades");
-            System.out.println("7- Realizar consultas sobre Viajes (Dada una Ciudad A y una Ciudad B)");
-            System.out.println("8- Verificar Viajes");
-            System.out.println("9- Mostrar el sistema");
-            System.out.println("10- Finalizar el programa");
+            System.out.println(" (1)  Realizar ABM de Ciudades");
+            System.out.println(" (2)  Realizar ABM de la Red de Rutas");
+            System.out.println(" (3)  Realizar ABM de Clientes");
+            System.out.println(" (4)  Realizar ABM de Pedidos");
+            System.out.println(" (5)  Realizar consultas sobre Clientes");
+            System.out.println(" (6)  Realizar consultas sobre Ciudades");
+            System.out.println(" (7)  Realizar consultas sobre Viajes (Dada una Ciudad A y una Ciudad B)");
+            System.out.println(" (8)  Verificar Viajes");
+            System.out.println(" (9)  Mostrar el sistema");
+            System.out.println(" (10) Finalizar el programa");
             System.out.println("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»««««««««««««««««««««««««««««««««««««");
             opcion = sc.nextInt();
             switch (opcion) {
@@ -246,10 +246,10 @@ public class Empresa {
         while (opcion != 4) {
             System.out.println("---------------------------------------------------------------------");
             System.out.println("Ingrese una opcion");
-            System.out.println("1. Insertar una nueva Ciudad");
-            System.out.println("2. Eliminar una Ciudad existente");
-            System.out.println("3. Modificar una Ciudad existente");
-            System.out.println("4. Volver al Menu Principal");
+            System.out.println("(1) Insertar una nueva Ciudad");
+            System.out.println("(2) Eliminar una Ciudad existente");
+            System.out.println("(3) Modificar una Ciudad existente");
+            System.out.println("(4) Volver al Menu Principal");
             System.out.println("---------------------------------------------------------------------");
             opcion = sc.nextInt();
             sc.nextLine();
@@ -332,9 +332,9 @@ public class Empresa {
         if (unaCiudad != null) {
             System.out.println("La ciudad que va a modificar es: \n" + unaCiudad.toString());
             System.out.println("Ingrese una opcion");
-            System.out.println("1-Modificar nombre de la ciudad");
-            System.out.println("2-Modificar provincia de la ciudad");
-            System.out.println("3-Volver al menu de Ciudades");
+            System.out.println("1) Modificar nombre de la ciudad");
+            System.out.println("2) Modificar provincia de la ciudad");
+            System.out.println("3)  Volver al menu de Ciudades");
             eleccion = sc.nextInt();
             switch (eleccion) {
                 case 1:
@@ -369,10 +369,10 @@ public class Empresa {
         while (opcion != 4) {
             System.out.println("---------------------------------------------------------------------");
             System.out.println("Ingrese una opcion");
-            System.out.println("1. Insertar una nueva Ruta");
-            System.out.println("2. Eliminar una Ruta existente");
-            System.out.println("3. Modificar una Ruta existente");
-            System.out.println("4. Volver al Menu Principal");
+            System.out.println("(1) Insertar una nueva Ruta");
+            System.out.println("(2) Eliminar una Ruta existente");
+            System.out.println("(3) Modificar una Ruta existente");
+            System.out.println("(4) Volver al Menu Principal");
             System.out.println("---------------------------------------------------------------------");
             opcion = sc.nextInt();
             sc.nextLine();
@@ -461,10 +461,10 @@ public class Empresa {
         while (opcion != 4) {
             System.out.println("---------------------------------------------------------------------");
             System.out.println("Ingrese una opcion");
-            System.out.println("1. Insertar un nuevo Cliente");
-            System.out.println("2. Eliminar un Cliente existente");
-            System.out.println("3. Modificar un Cliente existente");
-            System.out.println("4. Volver al Menu Principal");
+            System.out.println("(1) Insertar un nuevo Cliente");
+            System.out.println("(2) Eliminar un Cliente existente");
+            System.out.println("(3) Modificar un Cliente existente");
+            System.out.println("(4) Volver al Menu Principal");
             System.out.println("---------------------------------------------------------------------");
             opcion = sc.nextInt();
             switch (opcion) {
@@ -561,11 +561,11 @@ public class Empresa {
             while (opcion != 5) {
                 System.out.println("---------------------------------------------------------------------");
                 System.out.println("Ingrese una opcion");
-                System.out.println("1. Modificar el apellido del Cliente con numero de documento " + numDoc);
-                System.out.println("2. Modificar el nombre del Cliente con numero de documento " + numDoc);
-                System.out.println("3. Modificar el numero de telefono del Cliente con numero de documento " + numDoc);
-                System.out.println("4. Modificar la direccion de email del Cliente con numero de documento " + numDoc);
-                System.out.println("5. Volver al menu de ABMclientes");
+                System.out.println("1) Modificar el apellido del Cliente con numero de documento " + numDoc);
+                System.out.println("2) Modificar el nombre del Cliente con numero de documento " + numDoc);
+                System.out.println("3) Modificar el numero de telefono del Cliente con numero de documento " + numDoc);
+                System.out.println("4) Modificar la direccion de email del Cliente con numero de documento " + numDoc);
+                System.out.println("5) Volver al menu de ABMclientes");
                 System.out.println("---------------------------------------------------------------------");
                 opcion = sc.nextInt();
                 sc.nextLine();
@@ -613,10 +613,10 @@ public class Empresa {
         while (opcion != 4) {
             System.out.println("---------------------------------------------------------------------");
             System.out.println("Ingrese una opcion");
-            System.out.println("1. Agregar un nuevo Pedido");
-            System.out.println("2. Eliminar un Pedido existente");
-            System.out.println("3. Modificar un Pedido existente");
-            System.out.println("4. Volver al Menu Principal");
+            System.out.println("(1) Agregar un nuevo Pedido");
+            System.out.println("(2) Eliminar un Pedido existente");
+            System.out.println("(3) Modificar un Pedido existente");
+            System.out.println("(4) Volver al Menu Principal");
             System.out.println("---------------------------------------------------------------------");
             opcion = sc.nextInt();
             switch (opcion) {
@@ -758,12 +758,12 @@ public class Empresa {
                     while (opcion != 6) {
                         System.out.println("---------------------------------------------------------------------");
                         System.out.println("Ingrese una opcion");
-                        System.out.println("1. Modificar la cantidad de metros cubicos que ocupa el Pedido");
-                        System.out.println("2. Modificar la cantidad de bultos que compone el Pedido");
-                        System.out.println("3. Cambiar la direccion de retiro del Pedido");
-                        System.out.println("4. Cambiar la direccion de entrega del Pedido");
-                        System.out.println("5. Cambiar la condicion de pago en la que se encuentra el Pedido");
-                        System.out.println("6. Volver al menu de ABMpedidos");
+                        System.out.println("1) Modificar la cantidad de metros cubicos que ocupa el Pedido");
+                        System.out.println("2) Modificar la cantidad de bultos que compone el Pedido");
+                        System.out.println("3) Cambiar la direccion de retiro del Pedido");
+                        System.out.println("4) Cambiar la direccion de entrega del Pedido");
+                        System.out.println("5) Cambiar la condicion de pago en la que se encuentra el Pedido");
+                        System.out.println("6) Volver al menu de ABMpedidos");
                         System.out.println("---------------------------------------------------------------------");
                         opcion = sc.nextInt();
                         sc.nextLine();
@@ -829,8 +829,8 @@ public class Empresa {
             System.out.println("---------------------------------------------------------------------");
             System.out.println("Ingrese una opcion");
             System.out
-                    .println("1. Dada una clave de un Cliente (tipoDoc+numDoc), mostrar toda la información del mismo");
-            System.out.println("2. Volver al menu principal");
+                    .println("(1) Dada una clave de un Cliente (tipoDoc+numDoc), mostrar toda la información del mismo");
+            System.out.println("(2) Volver al menu principal");
             System.out.println("---------------------------------------------------------------------");
             opcion = sc.nextInt();
             switch (opcion) {
@@ -865,10 +865,9 @@ public class Empresa {
         while (opcion != 3) {
             System.out.println("---------------------------------------------------------------------");
             System.out.println("Ingrese una opcion");
-            System.out.println("1. Dado un codigo postal de una Ciudad, mostrar toda su informacion");
-            System.out.println(
-                    "2. Dado un prefijo, devolver todas las Ciudades cuyo código postal comienza con dicho prefijo");
-            System.out.println("3. Volver al menu principal");
+            System.out.println("(1) Dado un codigo postal de una Ciudad, mostrar toda su informacion");
+            System.out.println("(2) Dado un prefijo, devolver todas las Ciudades cuyo código postal comienza con dicho prefijo");
+            System.out.println("(3) Volver al menu principal");
             System.out.println("---------------------------------------------------------------------");
             opcion = sc.nextInt();
             switch (opcion) {
@@ -932,10 +931,13 @@ public class Empresa {
         int respuesta;
         do {
             System.out.println("--- CONSULTA DE VIAJES ---");
-            System.out.println(
-                    "<> 1. Obtener el camino que llegue de A a B que pase por menos ciudades.\n<> 2. Obtener el camino que llegue de A a B de menor distancia en kilómetros.\n<> 3. Obtener todos los caminos posibles de A a B que pasen por una"
-                            +
-                            " ciudad C sin pasar dos veces por la misma ciudad.\n<> 4. Verificar si es posible llegar de A a B recorriendo como máximo una cantidad X de kilómetros \n<> 5. Volver al Menu");
+            System.out.println("---------------------------------------------------------------------");
+            System.out.println(" (1) Obtener el camino que llegue de A a B que pase por menos ciudades");
+            System.out.println(" (2) Obtener el camino que llegue de A a B de menor distancia en kilómetros");
+            System.out.println(" (3) Obtener todos los caminos posibles de A a B que pasen por una ciudad C sin pasar dos veces por la misma ciudad.");
+            System.out.println(" (4) Verificar si es posible llegar de A a B recorriendo como máximo una cantidad X de kilómetros");       
+            System.out.println(" (5) Volver al Menu");                
+            System.out.println("---------------------------------------------------------------------");
             respuesta = sc.nextInt();
             switch (respuesta) {
                 case 1:
@@ -1027,10 +1029,12 @@ public class Empresa {
         int respuesta;
         do {
             System.out.println("--- VERIFICAR VIAJES ---");
-            System.out.println(
-                    "<> 1. Dada una ciudad A y una ciudad B mostrar todos los pedidos y calcular cuanto espacio total hace falta en el camion"
-                            +
-                            "\n<> 2.Verificar si sobra espacio para solicitudes intermedias.\n<> 3.Verificar un camino perfecto usando una lista. \n<> 4.Volver al Menu");
+            System.out.println("---------------------------------------------------------------------");
+            System.out.println(" (1) Dada una ciudad A y una ciudad B mostrar todos los pedidos y calcular cuanto espacio total hace falta en el camion");
+            System.out.println(" (2) Verificar si sobra espacio para solicitudes intermedias.");
+            System.out.println(" (3) Verificar un camino perfecto usando una lista.");
+            System.out.println(" (4) Volver al Menu");
+            System.out.println("---------------------------------------------------------------------");
             respuesta = sc.nextInt();
             switch (respuesta) {
                 case 1:
@@ -1076,12 +1080,6 @@ public class Empresa {
         }
     }
 
-    // Dada una ciudad A y una ciudad B y una cantidad en metros cúbicos (espacio en
-    // un camión), verificar si sobra espacio en el camión y hacer un listado de
-    // posibles
-    // solicitudes a ciudades intermedias que se podrían aprovechar a cubrir,
-    // considerando el camino más corto en kilómetros
-
     public static void espacioSobrante() {
         System.out.println("Ingrese el codigo de la ciudad A inicial");
         int codigoA = sc.nextInt();
@@ -1090,23 +1088,22 @@ public class Empresa {
         System.out.println("Ingrese los metros cubicos del camion ");
         int mtsNecesarios = sc.nextInt();
 
-        int espacio = obtenerEspacio(codigoA, codigoB);
+        int espacio = obtenerEspacio(codigoA, codigoB); //obtengo el espacio que ocupan los pedidos entre esas dos ciudades
         if (espacio < mtsNecesarios) {
             System.out.println("Hay suficiente espacio para otras solicitudes");
             Lista camino = mapaRutas.caminoMasCorto(codigoA, codigoB);
-            for (int i = 1; i < camino.longitud() - 1; i++) {
-                Lista listaSolicitudes = solicitudes.obtenerValores(codigoA + "" +
-                        camino.recuperar(i));
+            for (int i = 1; i < camino.longitud() - 1; i++) { // para todas las ciudades del camino mas corto entre A y B
+                Lista listaSolicitudes = solicitudes.obtenerValores(codigoA + "" + camino.recuperar(i)); //crea una lista entre solicitudes de A y la siguiente
                 if (!listaSolicitudes.esVacia()) {
                     System.out.println("Posibles pedidos a despachar son:");
-                    for (int j = 1; j <= listaSolicitudes.longitud(); j++) {
+                    for (int j = 1; j <= listaSolicitudes.longitud(); j++) { //para esa lista
                         Solicitud solicitud = (Solicitud) listaSolicitudes.recuperar(j);
                         System.out.println(solicitud.toString());
                     }
                 }
 
             }
-        } else {
+        } else { //si no hay espacio
             System.out.println("NO HAY SUFICIENTE ESPACIO PARA MAS PEDIDOS");
         }
     }
@@ -1116,7 +1113,7 @@ public class Empresa {
         int espacio = 0;
         if (mapaRutas.existeVertice(codigoA) && mapaRutas.existeVertice(codigoB)) {
             if (!listaSolicitudes.esVacia()) {
-                for (int i = 1; i <= listaSolicitudes.longitud(); i++) {
+                for (int i = 1; i <= listaSolicitudes.longitud(); i++) { //acumula el espacio de cada solicitud de una lista de solicitudes entre A y B
                     Solicitud solicitud = (Solicitud) listaSolicitudes.recuperar(i);
                     espacio = espacio + solicitud.getCantMetrosCubicos();
                 }
@@ -1198,8 +1195,8 @@ public class Empresa {
         
         do {
             System.out.println("--- MOSTRAR SISTEMA ---");
-            System.out.println("<> 1. Mostrar las ciudades.\n<> 2. Mostrar las rutas.\n<> 3. Mostrar los pedidos" +
-                    "\n<> 4. Mostrar los clientes.\n<> 5. Volver al menu.");
+            System.out.println("(1) Mostrar las ciudades.\n(2) Mostrar las rutas.\n(3) Mostrar los pedidos" +
+                    "\n(4) Mostrar los clientes.\n(5) Volver al menu.");
             respuesta = sc.nextInt();
             switch (respuesta) {
                 case 1:

@@ -11,13 +11,7 @@ public class MapeoAMuchos {
     }
     
     public boolean asociar(Comparable valorDominio, Object valorRango) {
-        /* Recibe un valor que representa a un elemento del dominio y un segundo
-        valor que representa a un elemento del rango. Si no existe otro par que 
-        contenga a valorDominio, se agrega en el mapeo el par (valorDominio, {valorRango}),
-        donde el segundo término es un conjunto de rangos con un solo valor. Si ya
-        existe un par con valorDominio, se agrega valorRango al conjunto de rangos existente.
-        Si la operación termina con éxito devuelve verdadero y falso en caso contrario
-        */
+        
         boolean exito = true;
         if (this.raiz == null) {
             this.raiz = new NodoAVLMapeoM(valorDominio, valorRango, null, null);

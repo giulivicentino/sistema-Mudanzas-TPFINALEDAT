@@ -77,8 +77,12 @@ public class Cliente {
 
     @Override
     public String toString() {
-        return "Cliente con TIPO: " + this.tipoDocumento + " N°" + this.numeroDocumento + ". "
+        return "  Cliente con : " + this.tipoDocumento + " N°" + this.numeroDocumento + ". "
                 + this.apellido + ", " + this.nombre + " con telefono: "
                 + this.telefono + " y correo: " + this.email +"\n";
+                
+
+
+                
     }
 }
