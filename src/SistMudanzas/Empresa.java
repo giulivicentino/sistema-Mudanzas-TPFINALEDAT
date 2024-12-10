@@ -31,7 +31,7 @@ public class Empresa {
     private static final HashMap<String, Cliente> clientes = new HashMap<>();
     private static final Scanner sc = new Scanner(System.in);
     private static FileWriter logWriter;
-
+ 
     public static void main(String[] args) {
         boolean exito = cargarDatos();
 
@@ -963,10 +963,10 @@ public class Empresa {
 
     public static void caminoMenosCiudades() {
         System.out.println("Ingrese el codigo de la ciudad A inicial");
-        int codigoA = sc.nextInt();
+        //int codigoA = sc.nextInt();
         System.out.println("Ingrese el codigo de la ciudad B final");
-        int codigoB = sc.nextInt();
-
+        //int codigoB = sc.nextInt();
+        int codigoA=1000, codigoB=8300;
         Lista camino = mapaRutas.caminoMasCorto(codigoA, codigoB);
         if (camino != null) {
             System.out.println("EL CAMINO QUE PASA POR MENOS CIUDADES ES: \n" + camino.toString());
@@ -1009,7 +1009,7 @@ public class Empresa {
         }
     }
 
-    public static void caminoXkilometrosMax() {
+    public static void caminoXkilometrosMax() { //cambiar a que pegue la vuelta si llega al tope
         System.out.println("Ingrese el codigo de la ciudad A inicial");
         int codigoA = sc.nextInt();
         System.out.println("Ingrese el codigo de la ciudad B final");
@@ -1167,19 +1167,20 @@ public class Empresa {
                     System.out.println(
                             "No es camino perfecto ya que no existen Pedidos entre " + origen + " y " +
                                     destino);
-                    exito = false;
+                    exito = false; //se corta el bucle y deja de verificar el resto de ciudades
                 } else {
                     Solicitud solicitud = (Solicitud) listaPedidos.recuperar(1);
                     ocupacion = ocupacion + solicitud.getCantMetrosCubicos();
                 }
             } else {
-                exito = false;
+                exito = false; //se corta el bucle y deja de verificar el resto de ciudades
                 System.out.println(
                         "No es camino perfecto ya que no existe una ruta entre la Ciudad " + origen +
                                 " y " + destino);
             }
             i++;
         }
+
         if (exito) {
             if (capacidad >= ocupacion) {
                 System.out.println("Es camino perfecto");

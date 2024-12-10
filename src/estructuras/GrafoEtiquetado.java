@@ -2,6 +2,7 @@ package estructuras;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class GrafoEtiquetado {
 
@@ -224,39 +225,41 @@ public class GrafoEtiquetado {
 
     public Lista caminoMasCorto(Object origen, Object destino) {
         Lista visitados = new Lista();
-        Lista actual = new Lista();
         Lista res = new Lista();
         if (this.inicio != null) {
             NodoVert origenAux = ubicarVertice(origen);
             NodoVert destinoAux = ubicarVertice(destino);
             if (origenAux != null && destinoAux != null) {
-                res = caminoMasCortoAux(origenAux, destino, visitados, actual, res);
+                res = caminoMasCortoAux(origenAux, destino, visitados, res);
             }
         }
         return res;
     }
 
-    private Lista caminoMasCortoAux(NodoVert vert, Object destino, Lista visitados, Lista actual, Lista res) {
+    private Lista caminoMasCortoAux(NodoVert vert, Object destino, Lista visitados, Lista res) {
         if (vert != null) {
-            visitados.insertar(vert.getElem(), visitados.longitud() + 1);
-            actual.insertar(vert.getElem(), actual.longitud() + 1);
-            if (vert.getElem().equals(destino)) {
-                if ((actual.longitud() < res.longitud()) || res.esVacia()) {
-                    res = actual.clone(); 
-                }
+           System.out.println("SOY: " + vert.getElem() + "   visitados: " + visitados.toString());
+
+            if (vert.getElem().equals(destino)) { // si vert es el destino, encontró un camino
+                res = visitados.clone();
+                System.out.println("--------------------------------------------------------------ENCONTRE CAMINO: " + res.toString()+ "----------------------------------------------------------------------------------------------------");
             } else {
                 NodoAdy ady = vert.getPrimerAdy();
                 while (ady != null) {
                     if (visitados.localizar(ady.getVertice().getElem()) < 0) {
-                        res = caminoMasCortoAux(ady.getVertice(), destino, visitados, actual, res); // llamado recursivo con el vecino
+                       // System.out.println(" LONGITUD VISITADOS: "+visitados.longitud()+"  LONGITUD MAS CORTO: "+res.longitud());   
+                        if (res.esVacia() || res.longitud() > visitados.longitud()) { // que para seguir buscando un camino, no supere la longitud del anterior
+                            visitados.insertar(vert.getElem(), visitados.longitud() + 1);
+                            res = caminoMasCortoAux(ady.getVertice(), destino, visitados, res); // llamado recursivo con  el vecino
+                            visitados.eliminar(visitados.longitud());//a la vuelta lo elimina
+                        } /*else{
+                         System.out.println("ESTABA ENCONTRANDO UNO MAS GRANDE LONGITUD VISITADOS: "+visitados.longitud()+"  LONGITUD MAS CORTO: "+res.longitud());   
+                        } */
                     }
                     ady = ady.getSigAdyacente();
                 }
             }
-            actual.eliminar(actual.longitud()); // ya lo visite, lo elimino del camino
-            visitados.eliminar(visitados.longitud());
         }
-        
         return res;
     }
 
@@ -281,6 +284,7 @@ public class GrafoEtiquetado {
             double km = menosKM[0];
             if (km == 0 || km > kmAux) {
                 visitados.insertar(vert.getElem(), visitados.longitud() + 1);
+               
                 if (vert.getElem().equals(destino)) {
                     menosKM[0] = kmAux;
                     res = visitados.clone();
@@ -441,7 +445,7 @@ public class GrafoEtiquetado {
         }
     }
 
-    public int cantAdy(NodoVert origen){
+    public int cantAdy(NodoVert origen){ //devuelve la cantidad total de adyacentes de un nodoVert
         NodoAdy ady =origen.getPrimerAdy();
         int cant =0;
         while(ady!=null){
@@ -464,7 +468,75 @@ public class GrafoEtiquetado {
         cantPosibles = cantAdy(origenAux); //como maximo van a haber tantos caminos como asdyacentes tenga el nodo inicial
 
         if (origenAux != null && destinoAux != null && intermedioAux != null) { // si ingresaron parametros validos
-            //while (i<2){
+            
+            while (i<cantPosibles){ //sigue construyendo la lista como cant max de ady q tenga el origen
+                Lista unCamino = new Lista(); // desde origen hasta intermedio
+                Lista resp = new Lista();
+                //Lista resp2 = new Lista();
+                boolean pasoInter = false;
+                //para sumarlo al acumulador de visitados, le saco el origen, destino y el intermedio asi no interfiere para buscar despues
+                
+                resp = caminoIntermedio(origenAux,intermedio, destino, visitados, resp, pasoInter);
+                listaCaminosFinal.insertar(resp, listaCaminosFinal.longitud() + 1);
+              
+                /*  if (!resp.esVacia()) {
+                    resp2 = resp.clone();
+                    listaCaminosFinal.insertar(resp2, listaCaminosFinal.longitud() + 1);
+                }*/
+                i++;
+            }
+            
+        }
+        return listaCaminosFinal;
+    }
+    private Lista caminoIntermedio(NodoVert vert,Object intermedio, Object destino, Lista visitados, Lista res,boolean pasoInter ) {
+        if (vert != null) {
+           System.out.println("SOY: " + vert.getElem() + "   visitados: " + visitados.toString());
+           if (vert.getElem().equals(intermedio)) {
+            pasoInter=true;
+           }
+           
+            if (vert.getElem().equals(destino)) { // si vert es el destino, encontró un camino
+                if(pasoInter){
+                    res = visitados.clone();
+                System.out.println("--------------------------------------------------------------ENCONTRE CAMINO: " + res.toString()+ "----------------------------------------------------------------------------------------------------");
+                }//si no paso por el medio, res sigue siendo vacio y va a dejar de hacer llamados recursivos
+               
+            } else {
+                NodoAdy ady = vert.getPrimerAdy();
+                while (ady != null) {
+                    if (visitados.localizar(ady.getVertice().getElem()) < 0) {
+                       // System.out.println(" LONGITUD VISITADOS: "+visitados.longitud()+"  LONGITUD MAS CORTO: "+res.longitud());   
+                        if (res.esVacia() || res.longitud() > visitados.longitud()) { // que para seguir buscando un camino, no supere la longitud del anterior
+                            visitados.insertar(vert.getElem(), visitados.longitud() + 1);
+                            res = caminoMasCortoAux(ady.getVertice(), destino, visitados, res); // llamado recursivo con  el vecino
+                            visitados.eliminar(visitados.longitud());//a la vuelta lo elimina
+                        } /*else{
+                         System.out.println("ESTABA ENC  ONTRANDO UNO MAS GRANDE LONGITUD VISITADOS: "+visitados.longitud()+"  LONGITUD MAS CORTO: "+res.longitud());   
+                        } */
+                    }
+                    ady = ady.getSigAdyacente();
+                }
+            }
+        }
+        return res;
+    }
+
+/* QUE NO VISITE NINGUNO PREVIO TAMPOCO
+ * public Lista listarCaminosConCiudad(Object origen, Object intermedio, Object destino) {
+        Lista visitadosTotal = new Lista();
+        Lista visitados = new Lista();
+        Lista listaCaminosFinal = new Lista();
+        
+        NodoVert origenAux = ubicarVertice(origen);
+        NodoVert destinoAux = ubicarVertice(destino);
+        NodoVert intermedioAux = ubicarVertice(intermedio);
+        int i=0,cantPosibles=0;
+
+        cantPosibles = cantAdy(origenAux); //como maximo van a haber tantos caminos como asdyacentes tenga el nodo inicial
+
+        if (origenAux != null && destinoAux != null && intermedioAux != null) { // si ingresaron parametros validos
+            
             while (i<cantPosibles){ //sigue construyendo la lista como cant max de ady q tenga el origen
                 Lista unCamino = new Lista(); // desde origen hasta intermedio
                 Lista resp = new Lista();
@@ -501,7 +573,7 @@ public class GrafoEtiquetado {
             if (vert.getElem().equals(intermedio)) {
             pasoInter=true;
             }
-            if (vert.getElem().equals(destino)&&pasoInter) {
+            if (vert.getElem().equals(destino) && pasoInter) {
                 if ((unCamino.longitud() < res.longitud()) || res.esVacia()) { //para hacer que tambien sea el mas corto pero esto es opcional
                 res = unCamino.clone();
                 
@@ -517,6 +589,7 @@ public class GrafoEtiquetado {
             }
             
             //si no llego a destino 
+            
             visitados.eliminar(visitados.longitud()); // en caso de que termina la ejecucion y no encontro camino, entonces "libera" los nosods q visito
             unCamino.eliminar(unCamino.longitud()); // ya encontre un camino, vacio la lista
         }
@@ -545,6 +618,8 @@ public class GrafoEtiquetado {
 
         return conca;
     }
+ */
+    
     public boolean esVacio() {
         return this.inicio == null;
     }
