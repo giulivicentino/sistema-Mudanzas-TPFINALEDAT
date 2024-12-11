@@ -1011,11 +1011,23 @@ public class Empresa {
 
     public static void caminoXkilometrosMax() { //cambiar a que pegue la vuelta si llega al tope
         System.out.println("Ingrese el codigo de la ciudad A inicial");
-        int codigoA = sc.nextInt();
+        //int codigoA = sc.nextInt();
+        int codigoA=5710,codigoB=3450,cantKm=2000;
         System.out.println("Ingrese el codigo de la ciudad B final");
-        int codigoB = sc.nextInt();
+       // int codigoB = sc.nextInt();
         System.out.println("Ingrese la cantidad maxima de kilometros que desea recorrer:");
-        int cantKm = sc.nextInt();
+        //int cantKm = sc.nextInt();
+
+        
+        Lista camino = mapaRutas.caminoMaxKm(codigoA, codigoB,cantKm);
+
+        if (camino != null) {
+            System.out.println("Es posible ir desde "+codigoA+" hasta "+codigoB+" en menos de "+cantKm+"km, pasando por: " + camino.toString());
+        } else {
+            System.out.println("No es posible ir desde "+codigoA+" hasta "+codigoB+" en menos de "+cantKm+"km ");
+        }
+
+
 
         double kmCamino = mapaRutas.caminoMasRapidoenKM(codigoA, codigoB, cantKm);
         if (kmCamino < cantKm) {
