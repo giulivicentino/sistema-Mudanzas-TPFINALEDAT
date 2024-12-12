@@ -536,35 +536,45 @@ public class GrafoEtiquetado {
 
     private Lista caminoMaxKmAux(NodoVert vert, Object destino,int cantKm,int acumuladorKm, Lista visitados, Lista res) {
         if (vert != null) {
-           System.out.println("SOY: " + vert.getElem() + "   visitados: " + visitados.toString()+" km recorridos: "+acumuladorKm);
+          System.out.println("SOY: " + vert.getElem() + "   visitados: " + visitados.toString()+" km recorridos: "+acumuladorKm);
 
-            if (vert.getElem().equals(destino)&& acumuladorKm<cantKm) { // si vert es el destino, encontró un camino
-                visitados.insertar(vert.getElem(), visitados.longitud() + 1);
-                res = visitados.clone();
-                //System.out.println("ENCONTRE UN CAMINO: " + res.toString()+ " CON KM: "+acumuladorKm);
+            if (vert.getElem().equals(destino)) { // si vert es el destino, encontró un camino
+                if (acumuladorKm < cantKm) {
+                    visitados.insertar(vert.getElem(), visitados.longitud() + 1);
+                    res = visitados.clone();
+                    System.out.println("ENCONTRE UN CAMINO: " + res.toString() + " CON KM: " + acumuladorKm);
+                }
+                
             } else {
                 NodoAdy ady = vert.getPrimerAdy();
                 while (ady != null) {
                     if (visitados.localizar(ady.getVertice().getElem()) < 0) {
-                       // System.out.println(" LONGITUD VISITADOS: "+visitados.longitud()+"  LONGITUD MAS CORTO: "+res.longitud());   
-                       if (acumuladorKm<= cantKm) {
+                       System.out.println("km antes de sumar distancia hasta "+ady.getVertice().getElem().toString()+" son :"+acumuladorKm);
+                        acumuladorKm= (int) (acumuladorKm + ady.getEtiqueta()); //suma los km del ady
+                        System.out.println(", desp km que sumo: "+ady.getEtiqueta()+", resultado acum: "   +acumuladorKm);
+
+                       if (acumuladorKm<= cantKm) { // si no es mayor no hace la recursion
                             //if (res.esVacia() || res.longitud() > visitados.longitud()) { // que para seguir buscando un camino, no supere la longitud del anterior
-                                acumuladorKm= (int) (acumuladorKm + ady.getEtiqueta());
-                                //System.out.println("como va acumulando km "+acumuladorKm);
                                 visitados.insertar(vert.getElem(), visitados.longitud() + 1);
-                                res = caminoMasCortoAux(ady.getVertice(), destino, visitados, res); // llamado recursivo con  el vecino
-                                visitados.eliminar(visitados.longitud());//a la vuelta lo elimina
-                                System.out.println("como no era por ese camino, los descuento, acum = "+acumuladorKm);
+                                res = caminoMaxKmAux(ady.getVertice(), destino,cantKm,acumuladorKm, visitados, res); // llamado recursivo con  el vecino
+                                
                              /* }else{
                              System.out.println("ESTABA ENCONTRANDO UNO MAS GRANDE LONGITUD VISITADOS: "+visitados.longitud()+"  LONGITUD MAS CORTO: "+res.longitud());   
                             }*/
                         }else{
                             System.out.println("ME PASABA DE KILOMETROS kmActual: "+acumuladorKm+"  kmMaximo: "+cantKm);   
+                            acumuladorKm =(int) (acumuladorKm - ady.getEtiqueta());
+                            System.out.println("los descuento para intentar por otro camino acum: "+acumuladorKm);
+                   
                         }
-                    }
+                    }   
                     ady = ady.getSigAdyacente();
                 }
             }
+            
+                            visitados.eliminar(visitados.longitud());//a la vuelta lo elimina
+                            System.out.println("como no era por ese camino, termina esta linea de recursion");
+                            
         }
         return res;
     }

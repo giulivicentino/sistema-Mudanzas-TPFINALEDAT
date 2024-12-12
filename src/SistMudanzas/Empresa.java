@@ -1017,24 +1017,15 @@ public class Empresa {
        // int codigoB = sc.nextInt();
         System.out.println("Ingrese la cantidad maxima de kilometros que desea recorrer:");
         //int cantKm = sc.nextInt();
-
         
         Lista camino = mapaRutas.caminoMaxKm(codigoA, codigoB,cantKm);
 
-        if (camino != null) {
+        if (!camino.esVacia()) {
             System.out.println("Es posible ir desde "+codigoA+" hasta "+codigoB+" en menos de "+cantKm+"km, pasando por: " + camino.toString());
         } else {
             System.out.println("No es posible ir desde "+codigoA+" hasta "+codigoB+" en menos de "+cantKm+"km ");
         }
 
-
-
-        double kmCamino = mapaRutas.caminoMasRapidoenKM(codigoA, codigoB, cantKm);
-        if (kmCamino < cantKm) {
-            System.out.println("ES POSIBLE IR DE " + codigoA + " A " + codigoB + " RECORRIENDO: " + kmCamino + " KM");
-        } else {
-            System.out.println("NO EXISTE UN CAMINO CON MENOS KM QUE EL INGRESADO ");
-        }
     }
 
     public static void verificarViaje() {
