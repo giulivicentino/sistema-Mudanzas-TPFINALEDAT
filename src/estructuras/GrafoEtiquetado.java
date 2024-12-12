@@ -238,8 +238,7 @@ public class GrafoEtiquetado {
 
     private Lista caminoMasCortoAux(NodoVert vert, Object destino, Lista visitados, Lista res) {
         if (vert != null) {
-           System.out.println("SOY: " + vert.getElem() + "   visitados: " + visitados.toString());
-
+            System.out.println("SOY: " + vert.getElem() + "   visitados: " + visitados.toString());
             if (vert.getElem().equals(destino)) { // si vert es el destino, encontró un camino
                 res = visitados.clone();
                 System.out.println("--------------------------------------------------------------ENCONTRE CAMINO: " + res.toString()+ "----------------------------------------------------------------------------------------------------");
@@ -253,7 +252,7 @@ public class GrafoEtiquetado {
                             res = caminoMasCortoAux(ady.getVertice(), destino, visitados, res); // llamado recursivo con  el vecino
                             visitados.eliminar(visitados.longitud());//a la vuelta lo elimina
                         } /*else{
-                         System.out.println("ESTABA ENCONTRANDO UNO MAS GRANDE LONGITUD VISITADOS: "+visitados.longitud()+"  LONGITUD MAS CORTO: "+res.longitud());   
+                        System.out.println("ESTABA ENCONTRANDO UNO MAS GRANDE LONGITUD VISITADOS: "+visitados.longitud()+"  LONGITUD MAS CORTO: "+res.longitud());   
                         } */
                     }
                     ady = ady.getSigAdyacente();
@@ -278,22 +277,21 @@ public class GrafoEtiquetado {
         return res;
     }
 
-    private Lista caminoMasRapidoAux(NodoVert vert, Object destino, double kmAux, double[] menosKM, Lista visitados,
-            Lista res) {
+    private Lista caminoMasRapidoAux(NodoVert vert, Object destino, double kmAux, double[] menosKM, Lista visitados,Lista res) {
         if (vert != null) {
             double km = menosKM[0];
+            //System.out.println("SOY: " + vert.getElem() + "con: "+ kmAux   +"km hechos y visitados: " + visitados.toString() + " menorKmPrevio: "+ menosKM[0]);
             if (km == 0 || km > kmAux) {
                 visitados.insertar(vert.getElem(), visitados.longitud() + 1);
-               
                 if (vert.getElem().equals(destino)) {
                     menosKM[0] = kmAux;
                     res = visitados.clone();
-
+                    //System.out.println("ENCONTRE UN CAMINO: " + res.toString() + " CON KM: " + menosKM[0]);
                 } else {
                     NodoAdy ady = vert.getPrimerAdy();
                     while (ady != null) {
                         if (visitados.localizar(ady.getVertice().getElem()) < 0) {
-                            double aux = kmAux + ady.getEtiqueta();
+                            double aux = kmAux + ady.getEtiqueta(); //sumo los kilometros del ady
                             res = caminoMasRapidoAux(ady.getVertice(), destino, aux, menosKM, visitados, res);
                         }
                         ady = ady.getSigAdyacente();
@@ -303,46 +301,6 @@ public class GrafoEtiquetado {
             }
         }
         return res;
-    }
-
-    public double caminoMasRapidoenKM(Object origen, Object destino, int KmMax) {
-        Lista visitados = new Lista();
-        double res = 0;
-        double[] menosKM = new double[1];
-        if (this.inicio != null) {
-            NodoVert origenAux = ubicarVertice(origen);
-            NodoVert destinoAux = ubicarVertice(destino);
-            if (origenAux != null && destinoAux != null) {
-                res = caminoMasRapidoAuxEnKm(origenAux, destino, 0, menosKM, visitados, res, KmMax, false);
-            }
-        }
-        return res;
-    }
-
-    private double caminoMasRapidoAuxEnKm(NodoVert vert, Object destino, double kmAux, double[] menosKM,
-            Lista visitados, double res, int KmMax, boolean bucle) {
-        if (vert != null && kmAux <= KmMax) {
-            visitados.insertar(vert.getElem(), visitados.longitud() + 1);
-            if (vert.getElem().equals(destino)) {
-                double km = menosKM[0];
-                if (km == 0 || km > kmAux) {
-                    menosKM[0] = kmAux;
-                    bucle = true;
-                }
-            } else {
-                NodoAdy ady = vert.getPrimerAdy();
-                while (ady != null && bucle == false) {
-                    if (visitados.localizar(ady.getVertice().getElem()) < 0) {
-                        double aux = kmAux + ady.getEtiqueta();
-                        res = caminoMasRapidoAuxEnKm(ady.getVertice(), destino, aux, menosKM, visitados, res, KmMax,
-                                bucle);
-                    }
-                    ady = ady.getSigAdyacente();
-                }
-            }
-            visitados.eliminar(visitados.longitud());
-        }
-        return menosKM[0];
     }
 
     public Lista caminoMasLargo(Object origen, Object destino) {
@@ -478,7 +436,6 @@ public class GrafoEtiquetado {
                 
                 resp = caminoIntermedio(origenAux,intermedio, destino, visitados, resp, pasoInter);
                 listaCaminosFinal.insertar(resp, listaCaminosFinal.longitud() + 1);
-              
                 /*  if (!resp.esVacia()) {
                     resp2 = resp.clone();
                     listaCaminosFinal.insertar(resp2, listaCaminosFinal.longitud() + 1);
@@ -491,17 +448,16 @@ public class GrafoEtiquetado {
     }
     private Lista caminoIntermedio(NodoVert vert,Object intermedio, Object destino, Lista visitados, Lista res,boolean pasoInter ) {
         if (vert != null) {
-           System.out.println("SOY: " + vert.getElem() + "   visitados: " + visitados.toString());
-           if (vert.getElem().equals(intermedio)) {
+            System.out.println("SOY: " + vert.getElem() + "   visitados: " + visitados.toString());
+            if (vert.getElem().equals(intermedio)) {
             pasoInter=true;
-           }
-           
+            }
+
             if (vert.getElem().equals(destino)) { // si vert es el destino, encontró un camino
                 if(pasoInter){
                     res = visitados.clone();
                 //System.out.println("--------------------------------------------------------------ENCONTRE CAMINO: " + res.toString()+ "----------------------------------------------------------------------------------------------------");
                 }//si no paso por el medio, res sigue siendo vacio y va a dejar de hacer llamados recursivos
-               
             } else {
                 NodoAdy ady = vert.getPrimerAdy();
                 while (ady != null) {
@@ -512,7 +468,7 @@ public class GrafoEtiquetado {
                             res = caminoMasCortoAux(ady.getVertice(), destino, visitados, res); // llamado recursivo con  el vecino
                             visitados.eliminar(visitados.longitud());//a la vuelta lo elimina
                         } /*else{
-                         System.out.println("ESTABA ENC ONTRANDO UNO MAS GRANDE LONGITUD VISITADOS: "+visitados.longitud()+"  LONGITUD MAS CORTO: "+res.longitud());   
+                        System.out.println("ESTABA ENC ONTRANDO UNO MAS GRANDE LONGITUD VISITADOS: "+visitados.longitud()+"  LONGITUD MAS CORTO: "+res.longitud());   
                         } */
                     }
                     ady = ady.getSigAdyacente();
@@ -527,6 +483,7 @@ public class GrafoEtiquetado {
         if (this.inicio != null) {
             NodoVert origenAux = ubicarVertice(origen);
             NodoVert destinoAux = ubicarVertice(destino);
+            
             if (origenAux != null && destinoAux != null) {
                 res = caminoMaxKmAux(origenAux, destino, cantKm,0,visitados, res);
             }
@@ -534,47 +491,40 @@ public class GrafoEtiquetado {
         return res;
     }
 
-    private Lista caminoMaxKmAux(NodoVert vert, Object destino,int cantKm,int acumuladorKm, Lista visitados, Lista res) {
+    private Lista caminoMaxKmAux(NodoVert vert, Object destino, int cantKm, int acumuladorKm, Lista visitados,Lista res) {
         if (vert != null) {
-          System.out.println("SOY: " + vert.getElem() + "   visitados: " + visitados.toString()+" km recorridos: "+acumuladorKm);
-
-            if (vert.getElem().equals(destino)) { // si vert es el destino, encontró un camino
-                if (acumuladorKm < cantKm) {
+            //System.out.println("SOY: " + vert.getElem() + "   visitados: " + visitados.toString() + " km recorridos: "+ acumuladorKm);
+            if (acumuladorKm < cantKm) {
+                if (vert.getElem().equals(destino)) { // si vert es el destino, encontró un camino
                     visitados.insertar(vert.getElem(), visitados.longitud() + 1);
                     res = visitados.clone();
-                    System.out.println("ENCONTRE UN CAMINO: " + res.toString() + " CON KM: " + acumuladorKm);
-                }
-                
-            } else {
-                NodoAdy ady = vert.getPrimerAdy();
-                while (ady != null) {
-                    if (visitados.localizar(ady.getVertice().getElem()) < 0) {
-                       System.out.println("km antes de sumar distancia hasta "+ady.getVertice().getElem().toString()+" son :"+acumuladorKm);
-                        acumuladorKm= (int) (acumuladorKm + ady.getEtiqueta()); //suma los km del ady
-                        System.out.println(", desp km que sumo: "+ady.getEtiqueta()+", resultado acum: "   +acumuladorKm);
-
-                       if (acumuladorKm<= cantKm) { // si no es mayor no hace la recursion
-                            //if (res.esVacia() || res.longitud() > visitados.longitud()) { // que para seguir buscando un camino, no supere la longitud del anterior
+                    //System.out.println("ENCONTRE UN CAMINO: " + res.toString() + " CON KM: " + acumuladorKm);
+                } else {
+                    NodoAdy ady = vert.getPrimerAdy();
+                    while (ady != null) {
+                        if (visitados.localizar(ady.getVertice().getElem()) < 0) {
+                            //System.out.println("(1)km antes de sumar distancia hasta << "+ ady.getVertice().getElem().toString() + " >> son :" + acumuladorKm);
+                            // SUMO LOS KM
+                            acumuladorKm = (int) (acumuladorKm + ady.getEtiqueta());                                                                                        
+                            //System.out.println("(2)desp km que sumo: " + ady.getEtiqueta() + ", resultado acum: " + acumuladorKm);
+                            if (acumuladorKm <= cantKm) { // si no es mayor no hace la recursion
                                 visitados.insertar(vert.getElem(), visitados.longitud() + 1);
-                                res = caminoMaxKmAux(ady.getVertice(), destino,cantKm,acumuladorKm, visitados, res); // llamado recursivo con  el vecino
-                                
-                             /* }else{
-                             System.out.println("ESTABA ENCONTRANDO UNO MAS GRANDE LONGITUD VISITADOS: "+visitados.longitud()+"  LONGITUD MAS CORTO: "+res.longitud());   
-                            }*/
-                        }else{
-                            System.out.println("ME PASABA DE KILOMETROS kmActual: "+acumuladorKm+"  kmMaximo: "+cantKm);   
-                            acumuladorKm =(int) (acumuladorKm - ady.getEtiqueta());
-                            System.out.println("los descuento para intentar por otro camino acum: "+acumuladorKm);
-                   
-                        }
-                    }   
-                    ady = ady.getSigAdyacente();
-                }
-            }
-            
-                            visitados.eliminar(visitados.longitud());//a la vuelta lo elimina
-                            System.out.println("como no era por ese camino, termina esta linea de recursion");
+                                res = caminoMaxKmAux(ady.getVertice(), destino, cantKm, acumuladorKm, visitados, res); // llamado recursivo con el vecino
+                            } 
+                             //si con ese ady me pasaba, no hago otro llamado con esa ciudad
+                            //System.out.println("ME PASABA DE KILOMETROS kmActual: " + acumuladorKm + "  kmMaximo: " + cantKm);
                             
+                            //RESTO LOS KM
+                            acumuladorKm = (int) (acumuladorKm - ady.getEtiqueta());
+                            //System.out.println("los descuento para intentar por otro camino acum: " + acumuladorKm);
+                            
+                        }
+                        ady = ady.getSigAdyacente();
+                    }
+                }
+                visitados.eliminar(visitados.longitud());// a la vuelta lo elimina
+                //System.out.println("como no era por ese camino, termina esta linea de recursion");
+            }
         }
         return res;
     }
