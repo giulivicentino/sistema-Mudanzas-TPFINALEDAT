@@ -137,11 +137,10 @@ public class Empresa {
             int numeroDocumento, int cantMetrosCubicos,
             int cantBultos, String domicilioRetiro, String domicilioEntrega, String estaPago) {
         // METODO QUE CARGA UN PEDIDO AL AVL MAPEO A MUCHOS ENTRE 2 CIUDADES EXISTENTES
-        Solicitud solicitud = new Solicitud(origen, destino, fechaSolicitud, tipoDocumento,
-                numeroDocumento, cantMetrosCubicos, cantBultos, domicilioRetiro, domicilioEntrega, estaPago);
+        Solicitud solicitud = new Solicitud(origen, destino, fechaSolicitud, tipoDocumento,numeroDocumento, cantMetrosCubicos, cantBultos, domicilioRetiro, domicilioEntrega, estaPago);
         boolean exito = mapaRutas.existeVertice(origen) && mapaRutas.existeVertice(destino);
         if (exito) {
-            solicitudes.asociar(origen + "" + destino, solicitud);
+            solicitudes.asociar(origen + "" + destino, solicitud); //DOMINIO: ORIGEN-DESTINO  RANGO:SOLICITUD
             escribirEnLog("Se cargo el " + solicitud.toString());
         } else {
             escribirEnLog("Una de las ciudades no se encuentra en el sistema. Error al solicitar un pedido");
@@ -990,13 +989,14 @@ public class Empresa {
     }
 
     public static void caminoPorCiudadIntermedia() {
-        System.out.println("Ingrese el codigo de la ciudad A inicial");
+        /*System.out.println("Ingrese el codigo de la ciudad A inicial");
         int codigoA = sc.nextInt();
         System.out.println("Ingrese el codigo de la ciudad C intermedia");
         int codigoC = sc.nextInt();
-
         System.out.println("Ingrese el codigo de la ciudad B final");
         int codigoB = sc.nextInt();
+        */
+        int codigoA=1000, codigoC=5152,codigoB=8300;
 
         Lista camino = mapaRutas.listarCaminosConCiudad(codigoA, codigoC, codigoB);
         if (!camino.esVacia()) {

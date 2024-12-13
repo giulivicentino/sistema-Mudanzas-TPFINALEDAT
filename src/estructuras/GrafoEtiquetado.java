@@ -413,70 +413,9 @@ public class GrafoEtiquetado {
         return cant;
     }
 
-    public Lista listarCaminosConCiudad(Object origen, Object intermedio, Object destino) {
-        Lista visitadosTotal = new Lista();
-        Lista visitados = new Lista();
-        Lista listaCaminosFinal = new Lista();
-        
-        NodoVert origenAux = ubicarVertice(origen);
-        NodoVert destinoAux = ubicarVertice(destino);
-        NodoVert intermedioAux = ubicarVertice(intermedio);
-        int i=0,cantPosibles=0;
 
-        cantPosibles = cantAdy(origenAux); //como maximo van a haber tantos caminos como asdyacentes tenga el nodo inicial
 
-        if (origenAux != null && destinoAux != null && intermedioAux != null) { // si ingresaron parametros validos
-            
-            while (i<cantPosibles){ //sigue construyendo la lista como cant max de ady q tenga el origen
-                Lista unCamino = new Lista(); // desde origen hasta intermedio
-                Lista resp = new Lista();
-                //Lista resp2 = new Lista();
-                boolean pasoInter = false;
-                //para sumarlo al acumulador de visitados, le saco el origen, destino y el intermedio asi no interfiere para buscar despues
-                
-                resp = caminoIntermedio(origenAux,intermedio, destino, visitados, resp, pasoInter);
-                listaCaminosFinal.insertar(resp, listaCaminosFinal.longitud() + 1);
-                /*  if (!resp.esVacia()) {
-                    resp2 = resp.clone();
-                    listaCaminosFinal.insertar(resp2, listaCaminosFinal.longitud() + 1);
-                }*/
-                i++;
-            }
-            
-        }
-        return listaCaminosFinal;
-    }
-    private Lista caminoIntermedio(NodoVert vert,Object intermedio, Object destino, Lista visitados, Lista res,boolean pasoInter ) {
-        if (vert != null) {
-            System.out.println("SOY: " + vert.getElem() + "   visitados: " + visitados.toString());
-            if (vert.getElem().equals(intermedio)) {
-            pasoInter=true;
-            }
 
-            if (vert.getElem().equals(destino)) { // si vert es el destino, encontró un camino
-                if(pasoInter){
-                    res = visitados.clone();
-                //System.out.println("--------------------------------------------------------------ENCONTRE CAMINO: " + res.toString()+ "----------------------------------------------------------------------------------------------------");
-                }//si no paso por el medio, res sigue siendo vacio y va a dejar de hacer llamados recursivos
-            } else {
-                NodoAdy ady = vert.getPrimerAdy();
-                while (ady != null) {
-                    if (visitados.localizar(ady.getVertice().getElem()) < 0) {
-                       // System.out.println(" LONGITUD VISITADOS: "+visitados.longitud()+"  LONGITUD MAS CORTO: "+res.longitud());   
-                        if (res.esVacia() || res.longitud() > visitados.longitud()) { // que para seguir buscando un camino, no supere la longitud del anterior
-                            visitados.insertar(vert.getElem(), visitados.longitud() + 1);
-                            res = caminoMasCortoAux(ady.getVertice(), destino, visitados, res); // llamado recursivo con  el vecino
-                            visitados.eliminar(visitados.longitud());//a la vuelta lo elimina
-                        } /*else{
-                        System.out.println("ESTABA ENC ONTRANDO UNO MAS GRANDE LONGITUD VISITADOS: "+visitados.longitud()+"  LONGITUD MAS CORTO: "+res.longitud());   
-                        } */
-                    }
-                    ady = ady.getSigAdyacente();
-                }
-            }
-        }
-        return res;
-    }
     public Lista caminoMaxKm(Object origen,Object destino,int cantKm) {
         Lista visitados = new Lista();
         Lista res = new Lista();
@@ -529,6 +468,126 @@ public class GrafoEtiquetado {
         return res;
     }
     
+    public Lista listarCaminosConCiudad(Object origen, Object intermedio, Object destino) {
+        Lista visitadosTotal = new Lista();
+        Lista visitados = new Lista();
+        
+        NodoVert origenAux = ubicarVertice(origen);
+        NodoVert destinoAux = ubicarVertice(destino);
+        NodoVert intermedioAux = ubicarVertice(intermedio);
+        
+        int i=0 ,longitudAnterior =0;
+
+        if (origenAux != null && destinoAux != null && intermedioAux != null) { // si ingresaron parametros validos
+            boolean pasoInter = false;
+            Lista resp = new Lista();
+
+            do {
+                System.out.println("--------------------otra vuelta desde el publicoooo");
+                visitadosTotal= resp.clone(); //asi no la pierdo y la mando x parametro
+                longitudAnterior= resp.longitud(); //guardo la longitud antes de llamar otra vez
+                resp.vaciar();//antes de invocar al modulo tiene que ir vacia, si desp de llamarlo, sigue vacia entonces no encontro un camino
+                resp = caminoSinRepetir(origenAux, intermedio, destino, visitados, visitadosTotal, pasoInter, resp); //si por lo menos encuentra 1 camino
+                if (longitudAnterior<resp.longitud()) {
+                    System.out.println("ENCONTRE CAMINO LETS GOOOO "+resp.toString());
+                    //visitadosTotal.insertar(resp, visitadosTotal.longitud()+1);
+                    System.out.println("Agrego el nuevo camino a la coleccion: "+visitadosTotal.toString());
+                }
+            }while (longitudAnterior<resp.longitud()) ; //si encontro uno significa que la lista crecio
+            //}while (!resp.esVacia()) ; // mientras que encuentre caminos nuevos
+                
+            System.out.println("ya no hay mas caminos");
+            
+        }
+return visitadosTotal;
+    }
+
+    
+
+    private Lista caminoSinRepetir(NodoVert vert,Object intermedio ,Object destino, Lista visitados,Lista visitadosTotal, boolean pasoInter,Lista res) {
+        if (vert != null) {
+            visitados.insertar(vert.getElem(), visitados.longitud() + 1); //lo tacho para no volver a visitarlo
+            System.out.println("SOY: " + vert.getElem() + "   caminados: " + visitados.toString());
+            if (vert.getElem().equals(intermedio)) {
+            pasoInter=true;
+            }
+
+            if (vert.getElem().equals(destino)) {
+                /* 
+                if (pasoInter) {
+                    //System.out.println("estoy en destino y pase por intermedio, camine: "+visitados.toString()+" me busco en visitadosTtotal: "+visitadosTotal.toString());
+                    //boolean encontre = buscarCaminoEnLista(visitadosTotal,visitados); //quiero verificarlo cuando encuentre un camino
+                    
+                    if (visitadosTotal.esVacia()||!encontre)<0 ) {//primera iteracion
+                        visitados.insertar(vert.getElem(), visitados.longitud() + 1); //lo tacho para no volver a visitarlo
+                        visitadosTotal.insertar(visitados, visitadosTotal.longitud()+1); //AGREGO EL CAMINO A LA LISTA DE CAMINOS
+                        res= visitados.clone();//LO DEVUELVO CON OTRO NOMBRE
+                        System.out.println("SOY NUEVO!! me agreg a la lista  "+res.toString());  
+                    }//si no se cumple, res
+                    
+                }
+                */
+            } else { //busca un vecino no visitado y hace el llamado recursivo con eso, si estan todos ya termina
+                NodoAdy ady = vert.getPrimerAdy();
+                while (ady != null) {
+                    if (visitados.localizar(ady.getVertice().getElem()) < 0) {//  busca que no ente en cualquier otro camino anterior
+                        
+                        //System.out.println("llamado con: "+ady.getVertice().getElem().toString());
+                        res = caminoSinRepetir(ady.getVertice(),intermedio, destino, visitados, visitadosTotal,pasoInter, res); // llamado recursivo con el vecino
+                        //si no llego a destino 
+                        
+                        }
+                ady = ady.getSigAdyacente(); //cambia de ady
+                }    
+            }
+            visitados.eliminar(visitados.longitud()); // en caso de que termina la ejecucion y no encontro camino, entonces "libera" los nosods q visito
+            //System.out.println("termino el llamado, conmigo no era: "+ady.getVertice().getElem().toString()+" visitados sin mi: "+visitados.toString());
+        }    
+            return res;
+        }
+        
+
+        public static boolean buscarCaminoEnLista(Lista listaTotal, Lista listaBuscada) {
+            boolean encontrada = true;
+            int i = 0;
+            if (!listaTotal.esVacia() && !listaBuscada.esVacia()) {
+                while (i < listaTotal.longitud() || !encontrada) {
+                    Lista lista1 = (Lista) listaTotal.recuperar(i);
+                    System.out.println("que estoy comparando de total: " + lista1 + "   y lo que busco es: " + listaBuscada.toString());
+                    
+                    encontrada = lista1.equals(listaBuscada);
+                    System.out.println(" eran iguales? "+encontrada);
+                    i++;
+                }
+            }else{
+                System.out.println("ALGUNA ESTABA VACIA");
+                encontrada=false;
+            }
+
+            return encontrada;
+        }
+
+
+    public static Lista concatenar(Lista lista1, Lista lista2) {
+        Lista conca = new Lista();
+        int i = 1, j = 1, longi = lista1.longitud() + lista2.longitud();
+
+        while (i <= lista1.longitud() || j <= lista2.longitud()) {
+            Object aux1, aux2;
+            aux1 = lista1.recuperar(i);
+            aux2 = lista2.recuperar(j);
+            if (i <= longi - lista2.longitud()) { //longitud de la primera lista
+                conca.insertar(aux1, i);
+                i++;
+            } else { //para la longitud de lista2
+                conca.insertar(aux2, i);
+                i++;
+                j++;
+            }
+        }
+
+        return conca;
+    }
 
 /* QUE NO VISITE NINGUNO PREVIO TAMPOCO
  * public Lista listarCaminosConCiudad(Object origen, Object intermedio, Object destino) {
