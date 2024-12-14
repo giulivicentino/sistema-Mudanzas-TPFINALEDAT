@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  *
@@ -972,6 +973,20 @@ public class Empresa {
         } else {
             System.out.println("NO EXISTE UN CAMINO ENTRE AMBAS CIUDADES");
         }
+
+        System.out.println("-------------- Si desea ver todos los caminos posibles ingrese 1");
+        int todosCaminos =sc.nextInt();
+        if(todosCaminos==1){
+            Lista camino2 = mapaRutas.listarTodosLosCaminos(codigoA, codigoB);
+            if (!camino2.esVacia()) {
+                for (int i = 1; i <= camino2.longitud(); i++) { // para imprimir cada camino posible
+                    Object aux = camino2.recuperar(i);
+                    System.out.println("POSIBLE CAMINO N°: "+i+"  " + aux.toString());
+                }
+            } else {
+                System.out.println("NO EXISTEN CAMINOS");
+            }
+        }
     }
 
     public static void caminoMenosKilometros() {
@@ -1007,6 +1022,7 @@ public class Empresa {
         } else {
             System.out.println("NO EXISTEN CAMINOS");
         }
+    
     }
 
     public static void caminoXkilometrosMax() { //cambiar a que pegue la vuelta si llega al tope
@@ -1155,6 +1171,7 @@ public class Empresa {
         } else {
             System.out.println("Ingrese un numero valido de Ciudades");
         }
+        
     }
 
     public static void verificarCaminoPerfecto(Lista lista, int capacidad) {

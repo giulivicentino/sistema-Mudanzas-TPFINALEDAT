@@ -47,7 +47,6 @@ public class Diccionario {
             } else {
                 nodo.setDerecho(new NodoAVLDicc(clave, dato, null, null));
             }
-            
         }
         if (exito) {
             nodo.recalcularAltura();
@@ -278,7 +277,7 @@ public class Diccionario {
             tieneAmbosCandidato(n.getDerecho(), n, raiz);
 
         } else {
-
+            System.out.println("encontro candidto: "+n.getClave().toString());
             // encontro el candidato, setea los elementos del nodo a modificar(raiz)
             raiz.setClave(n.getClave());
             raiz.setDato(n.getDato());
